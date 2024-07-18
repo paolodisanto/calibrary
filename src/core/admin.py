@@ -5,11 +5,22 @@ from core.models import (
 )
 
 class InstrumentAdmin(admin.ModelAdmin): #genero un modelo de admin para gestionar el modelo de la manera en que yo decida
-    list_display = ('id', 'tag', 'brand', 'location') #aca pongo los campos a listar
-    list_filter = ('location', 'brand') #filtro
+    list_display = ('id', 'tag', 'location', 'location_comments', 'brand', 'model', 'range', 'unit', 'process_connection', 'serial_number', 'traceable', 'removal_date', 'removal_reason') #aca pongo los campos a listar
+    #ver en chat como listar campos pero que sean vinculos
+    #list_filter = ('location', 'brand') #filtro
+    
+    #ver en chat como editar el admin de django para poner logos
 
-admin.site.register(SequentialTag)
-admin.site.register(Tag)
+class SequentialTagAdmin(admin.ModelAdmin):
+    list_display = ('prefix', 'latest') #columnas que muestro
+
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('id', 'magnitude', 'technology', 'display', 'description') #columnas que muestro
+    list_filter = ('id', 'magnitude', 'technology', 'display', 'description') #filtro
+    
+
+admin.site.register(SequentialTag, SequentialTagAdmin)
+admin.site.register(Tag, TagAdmin)
 admin.site.register(Location)
 admin.site.register(Instrument, InstrumentAdmin)
 admin.site.register(SetUp)

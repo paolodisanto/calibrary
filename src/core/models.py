@@ -90,6 +90,7 @@ class Instrument(models.Model):
     #location2 = models.ForeignKey(Location2)
     location_comments = models.CharField(blank=True, null=True, max_length=50)
     brand = models.CharField(blank=True, null=True, max_length=50)
+    model = models.CharField(blank=True, null=True, max_length=50)
     range = models.CharField(blank=True, null=True, max_length=20)
     unit = models.CharField(blank=True, null=True, max_length=10)
     process_connection = models.CharField(blank=True, null=True, max_length=20)
