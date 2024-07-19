@@ -105,7 +105,7 @@ class Instrument(models.Model):
 #Generación del modelo SetUp
 class SetUp(models.Model):
     instrument = models.ForeignKey(Instrument, on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now_add=True) #Se establece en true para que grabe la fecha de creación en forma automática.
+    date = models.DateTimeField()#, auto_now_add=True) #Se establece en true para que grabe la fecha de creación en forma automática.
     gdc_type = models.CharField(max_length=50)
     gdc_number = models.CharField(max_length=50)
     author = models.CharField(max_length=50)
@@ -114,7 +114,7 @@ class SetUp(models.Model):
     comments = models.CharField(max_length=100)
     
     def __str__(self):
-        return self.date
+        return f'{self.date}'
 
 #Generación del modelo Check    
 class Check (models.Model):
@@ -130,7 +130,7 @@ class Check (models.Model):
     comments = models.CharField(max_length=100)
     
     def __str__(self):
-        return self.date
+        return f'{self.date}'
 
 #Generación del modelo PatternInstrument
 class PatternInstrument (models.Model):
@@ -141,7 +141,7 @@ class PatternInstrument (models.Model):
     comments = models.CharField(max_length=100, blank=True, null=True)
     
     def __str__(self):
-        return self.instrument
+        return f'{self.instrument}'
 
 #Generación del modelo Contrast
 class Contrast (models.Model):
@@ -156,10 +156,10 @@ class Contrast (models.Model):
     author = models.CharField(max_length=50)
     expiration = models.DateField()
     p_instrument = models.OneToOneField (PatternInstrument, on_delete=models.RESTRICT)
-    comments = models.CharField(max_length=100)
+    comments = models.CharField(max_length=100, blank=True, null=True)
     
     def __str__(self):
-        return self.date
+        return f'{self.date}'
 
 #Modelo para crear una tabla de adjuntos con un atributo de claves genericas, el cual se usa para indexar a cada tabla que lleve adjuntos
 #Generación del modelo Attachment
