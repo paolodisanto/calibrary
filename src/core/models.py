@@ -115,6 +115,9 @@ class SetUp(models.Model):
     
     def __str__(self):
         return f'{self.date}'
+    @property #me permite mostrar diferentes columnas de instrumentos en este modelo. Como complemento se debe agregar en admin.py el atributo a mostrar
+    def brand(self):
+        return self.instrument.brand
 
 #Generación del modelo Check    
 class Check (models.Model):

@@ -19,7 +19,8 @@ class TagAdmin(admin.ModelAdmin):
     list_filter = ('id', 'magnitude', 'technology', 'display', 'description') #filtro
 
 class SetUpAdmin(admin.ModelAdmin):
-    list_display = ('id', 'instrument', 'date', 'gdc_type', 'gdc_number', 'author', 'alarm_set', 'trip_set', 'comments') #columnas que muestro    
+    list_display = ('id', 'instrument', 'brand', 'date', 'gdc_type', 'gdc_number', 'author', 'alarm_set', 'trip_set', 'comments') #columnas que muestro    
+   #agrege brand en el modelo de SetUp para poder mostrarlo.
 
 class CheckAdmin(admin.ModelAdmin):
     list_display = ('id', 'instrument', 'date', 'result', 'author', 'comments') #columnas que muestro    
