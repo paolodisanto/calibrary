@@ -1,11 +1,53 @@
 from django.contrib import admin
+from django.contrib.admin import SimpleListFilter #se agrega para poder realizar filtros personalizados en el admin de django
 from core.models import (
     SequentialTag, Tag, Location, Instrument, SetUp,
     Check, PatternInstrument, Contrast, Attachment
 )
+ 
+#filtro personalizado para el campo removal_date
+class RemovalDateFilter(SimpleListFilter):
+    title = 'removal date'
+    parameter_name = 'removal_date'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('None', 'No removal date'),
+            ('Not None', 'With removal date'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'None':
+            return queryset.filter(removal_date__isnull=True)
+        if self.value() == 'Not None':
+            return queryset.filter(removal_date__isnull=False)
+        return queryset
+
 
 class InstrumentAdmin(admin.ModelAdmin): #genero un modelo de admin para gestionar el modelo de la manera en que yo decida
-    list_display = ('id', 'tag', 'location', 'location_comments', 'brand', 'model', 'range', 'unit', 'process_connection', 'serial_number', 'traceable', 'removal_date', 'removal_reason') #aca pongo los campos a listar
+    #defino los campos a mostrar por defecto
+    default_list_display = (
+        'id', 'tag', 'location', 'location_comments', 'brand', 'model',
+        'range', 'unit', 'process_connection', 'serial_number', 'traceable'
+    )
+    additional_fields = ('removal_date', 'removal_reason') #agrego los campos que coy a mostrar solo para instrumentos dados de baja
+    
+    def get_list_display(self, request):
+        # Verifica si el filtro 'removal_date' está activo y su valor
+        if request.GET.get('removal_date') == 'Not None':
+            return self.default_list_display + self.additional_fields
+        return self.default_list_display
+    
+    list_filter = (RemovalDateFilter, 'traceable', 'location')
+    
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        
+        # Aplica el filtro por defecto solo si no se ha seleccionado ningún filtro
+        if not request.GET.get('removal_date'):
+            return qs.filter(removal_date__isnull=True)
+        return qs
+
     #ver en chat como listar campos pero que sean vinculos
     #list_filter = ('location', 'brand') #filtro
     
@@ -20,7 +62,7 @@ class TagAdmin(admin.ModelAdmin):
 
 class SetUpAdmin(admin.ModelAdmin):
     list_display = ('id', 'instrument', 'brand', 'date', 'gdc_type', 'gdc_number', 'author', 'alarm_set', 'trip_set', 'comments') #columnas que muestro    
-   #agrege brand en el modelo de SetUp para poder mostrarlo.
+   #como ejemplo agrege brand en el modelo de SetUp para poder mostrarlo.
 
 class CheckAdmin(admin.ModelAdmin):
     list_display = ('id', 'instrument', 'date', 'result', 'author', 'comments') #columnas que muestro    
