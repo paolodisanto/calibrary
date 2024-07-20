@@ -4,8 +4,12 @@ from core.models import (
     SequentialTag, Tag, Location, Instrument, SetUp,
     Check, PatternInstrument, Contrast, Attachment
 )
- 
-#filtro personalizado para el campo removal_date
+
+""" 
+El instrumento se da de baja al poner fecha en el campo 'removal_date', 
+por este motivo se define un filtro personalizado para el campo 'removal_date', 
+listando solos los instrumentos "activos".
+"""
 class RemovalDateFilter(SimpleListFilter):
     title = 'removal date'
     parameter_name = 'removal_date'
@@ -27,18 +31,16 @@ class RemovalDateFilter(SimpleListFilter):
 class InstrumentAdmin(admin.ModelAdmin): #genero un modelo de admin para gestionar el modelo de la manera en que yo decida
     #defino los campos a mostrar por defecto
     default_list_display = (
-        'id', 'tag', 'location', 'location_comments', 'brand', 'model',
+        'id', 'tag', 'get_tag_magnitude_display', 'location', 'location_comments', 'brand', 'model',
         'range', 'unit', 'process_connection', 'serial_number', 'traceable'
     )
-    additional_fields = ('removal_date', 'removal_reason') #agrego los campos que coy a mostrar solo para instrumentos dados de baja
+    additional_fields = ('removal_date', 'removal_reason') #agrego los campos extras que voy a mostrar solo para instrumentos dados de baja
     
     def get_list_display(self, request):
         # Verifica si el filtro 'removal_date' está activo y su valor
         if request.GET.get('removal_date') == 'Not None':
-            return self.default_list_display + self.additional_fields
+            return self.default_list_display + self.additional_fields #en caso de que removal_date tenga un valor, se listan con mas campos
         return self.default_list_display
-    
-    list_filter = (RemovalDateFilter, 'traceable', 'location')
     
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -46,7 +48,15 @@ class InstrumentAdmin(admin.ModelAdmin): #genero un modelo de admin para gestion
         # Aplica el filtro por defecto solo si no se ha seleccionado ningún filtro
         if not request.GET.get('removal_date'):
             return qs.filter(removal_date__isnull=True)
-        return qs
+        return qs.select_related('tag') # Usa select_related para optimizar la consulta
+    
+    list_select_related = ('tag',)  # Optimiza la consulta para incluir datos relacionados
+    
+    @admin.display(description='TAG Magnitude')
+    def get_tag_magnitude_display(self, obj):
+        return obj.tag.get_magnitude_display()    
+    
+    list_filter = (RemovalDateFilter, 'traceable', 'location')
 
     #ver en chat como listar campos pero que sean vinculos
     #list_filter = ('location', 'brand') #filtro
