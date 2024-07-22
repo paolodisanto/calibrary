@@ -10,6 +10,7 @@ El instrumento se da de baja al poner fecha en el campo 'removal_date',
 por este motivo se define un filtro personalizado para el campo 'removal_date', 
 listando solos los instrumentos "activos".
 """
+
 class RemovalDateFilter(SimpleListFilter):
     title = 'removal date'
     parameter_name = 'removal_date'
@@ -26,14 +27,14 @@ class RemovalDateFilter(SimpleListFilter):
         if self.value() == 'Not None':
             return queryset.filter(removal_date__isnull=False)
         return queryset
-
+    
 
 class InstrumentAdmin(admin.ModelAdmin): #genero un modelo de admin para gestionar el modelo de la manera en que yo decida
     #defino los campos a mostrar por defecto
     default_list_display = (
-        'id', 'tag', 'get_tag_magnitude_display', 'location', 'location_comments', 'brand', 'model',
-        'range', 'unit', 'process_connection', 'serial_number', 'traceable'
+        'id', 'tag', 'get_tag_description', 'get_tag_magnitude_display', 'get_tag_technology_display', 'get_tag_display_display', 'location', 'location_comments' , 'traceable'
     )
+    
     additional_fields = ('removal_date', 'removal_reason') #agrego los campos extras que voy a mostrar solo para instrumentos dados de baja
     
     def get_list_display(self, request):
@@ -44,24 +45,33 @@ class InstrumentAdmin(admin.ModelAdmin): #genero un modelo de admin para gestion
     
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        
-        # Aplica el filtro por defecto solo si no se ha seleccionado ningún filtro
-        if not request.GET.get('removal_date'):
-            return qs.filter(removal_date__isnull=True)
-        return qs.select_related('tag') # Usa select_related para optimizar la consulta
     
+     # Verifica si estamos en la vista de cambio (modificación) de una instancia específica
+        if 'removal_date' not in request.GET and not request.resolver_match.kwargs:
+            return qs.filter(removal_date__isnull=True)
+        return qs.select_related('tag')
+        
     list_select_related = ('tag',)  # Optimiza la consulta para incluir datos relacionados
     
-    @admin.display(description='TAG Magnitude')
+    @admin.display(description='Description')
+    def get_tag_description(self, obj):
+        return obj.tag.description
+    
+    @admin.display(description='Magnitude')
     def get_tag_magnitude_display(self, obj):
-        return obj.tag.get_magnitude_display()    
+        return obj.tag.get_magnitude_display()
+    
+    @admin.display(description='Technology')
+    def get_tag_technology_display(self, obj):
+        return obj.tag.get_technology_display()
+
+    @admin.display(description='Display')
+    def get_tag_display_display(self, obj):
+        return obj.tag.get_display_display()   
     
     list_filter = (RemovalDateFilter, 'traceable', 'location')
 
     #ver en chat como listar campos pero que sean vinculos
-    #list_filter = ('location', 'brand') #filtro
-    
-    #ver en chat como editar el admin de django para poner logos
 
 class SequentialTagAdmin(admin.ModelAdmin):
     list_display = ('prefix', 'latest') #columnas que muestro
