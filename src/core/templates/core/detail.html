@@ -1,0 +1,8 @@
+{% if instrument %}
+    {{instrument}}
+    {{instrument.location}}
+    {{instrument.brand}}
+    {{instrument.tag.get_technology_display}}
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}

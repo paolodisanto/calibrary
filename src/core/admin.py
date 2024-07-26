@@ -5,6 +5,7 @@ from core.models import (
     Check, PatternInstrument, Contrast, Attachment
 )
 
+#admin.site.register(qr)
 """ 
 El instrumento se da de baja al poner fecha en el campo 'removal_date', 
 por este motivo se define un filtro personalizado para el campo 'removal_date', 
