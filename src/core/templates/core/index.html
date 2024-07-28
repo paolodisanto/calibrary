@@ -1,6 +1,57 @@
+<!--
 <form action="/detail/" method="post">
     {% csrf_token %}
     <input type="input" name="tag_id">
     <input type="submit" value="Buscar" class="btn btn-primary">
   </form>
-<a href="/admin"> administracion </a>
+  <a href="/admin"> ADMINISTRADOR </a>
+-->
+<!doctype html>
+<html lang="en">
+  <head>
+    {% load static %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Calibrary</title>
+    <!-- Ruta al archivo CSS -->
+    <link rel="stylesheet" href="{% static 'core/style.css' %}">
+  </head>
+  <body>
+    <header>
+        <div class="left-image">
+            <img src="{% static 'core/logo.png' %}" alt="Logo" style="height: 100px;">
+          </div>
+          <div class="center-image">
+            <img src="{% static 'core/Nombre.png' %}" alt="Nombre" style="height: 300px;">
+          </div>       
+      <nav>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="/admin"> Admin </a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+    
+    <main>
+      <section id="home">
+        <p><h2>Buscar Instrumento</h2></p>
+        Ingresar TAG
+        <p><h2><form action="/detail/" method="post">
+            {% csrf_token %}
+            <input type="input" name="tag_id">
+            <input type="submit" value="Buscar" class="btn btn-primary">
+          </form></p>
+      </section>
+      
+      <section id="contact">
+        <h2>Contact</h2>
+        <p>How to get in touch with you.</p>
+      </section>
+    </main>
+    
+    <footer>
+      <p>&copy; 2024 My MVP. All rights reserved.</p>
+    </footer>
+  </body>
+</html>
