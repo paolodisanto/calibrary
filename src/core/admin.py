@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter #se agrega para poder realizar filtros personalizados en el admin de django
+from django.utils.html import format_html
 from core.models import (
     SequentialTag, Tag, Location, Instrument, SetUp,
     Check, PatternInstrument, Contrast, Attachment
@@ -78,8 +79,24 @@ class SequentialTagAdmin(admin.ModelAdmin):
     list_display = ('prefix', 'latest') #columnas que muestro
 
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('id', 'magnitude', 'technology', 'display', 'description') #columnas que muestro
+    list_display = ('id', 'magnitude', 'technology', 'display', 'description', 'qr_code_image') #columnas que muestro
     list_filter = ('id', 'magnitude', 'technology', 'display', 'description') #filtro
+    actions = ['generate_qr_codes']
+    readonly_fields = ('qr_code',)  # Hacer el campo qr_code solo lectura
+
+    def generate_qr_codes(self, request, queryset):
+        for tag in queryset:
+            if not tag.qr_code:
+                tag.save()
+        self.message_user(request, "Códigos QR generados/actualizados correctamente.")
+    generate_qr_codes.short_description = "Generar QR codes para tags seleccionados"
+
+    def qr_code_image(self, obj):
+        if obj.qr_code:
+            return format_html('<img src="{}" width="50" height="50" />'.format(obj.qr_code.url))
+        return "No QR code"
+    qr_code_image.short_description = "QR Code"
+
 
 class SetUpAdmin(admin.ModelAdmin):
     list_display = ('id', 'instrument', 'brand', 'date', 'gdc_type', 'gdc_number', 'author', 'alarm_set', 'trip_set', 'comments') #columnas que muestro    
