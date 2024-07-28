@@ -1,3 +1,10 @@
+@font-face {
+    font-family: 'Arista';
+    src: url('/static/core/fonts/Arista-Pro-Light.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 /* Basic Reset */
 *{
     margin: 0;
@@ -7,12 +14,10 @@
   
  /* Body Styling */
 body {
-    font-family: Arial, sans-serif;
     line-height: 1.6;
     padding: 20px;
     background-color: #f4f4f4;
 }
-
 
   /* General header styling */
 header {
@@ -49,7 +54,7 @@ header .center-image img {
 }  
 
 /* Navigation styling */
-header nav {
+header nav {    
     margin-right: 10px;
 }
 
@@ -68,6 +73,7 @@ header nav ul li {
 header nav ul li a {
     color: #0574c4;
     text-decoration: none;
+    font-family: 'Arista', Arial; /* Apply the Arista font */
 }
 
 header nav ul li a:hover {

@@ -1,5 +1,5 @@
 @font-face {
-    font-family: 'arista';
+    font-family: 'Arista';
     src: url('/static/core/fonts/Arista-Pro-Light.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
@@ -7,7 +7,7 @@
 
 /* Cambiar el color de fondo de la barra superior del administrador de Django */
 #header {
-    font-family: 'arista', sans-serif;
+    font-family: 'Arista', sans-serif;
     background: #f9f8f8; /* Cambia este valor al color que desees */
 }
 
