@@ -11,9 +11,29 @@
 <!DOCTYPE html>
 <html>
 <head>
+    {% load static %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Detalles del Instrumento</title>
+    <!-- Ruta al archivo CSS -->
+    <link rel="stylesheet" href="{% static 'core/style.css' %}">
 </head>
 <body>
+  <header>
+    <div class="left-image">
+        <img src="{% static 'core/logo.png' %}" alt="Logo" style="height: 100px;">
+      </div>
+      <div class="center-image">
+        <img src="{% static 'core/Nombre.png' %}" alt="Nombre" style="height: 300px;">
+      </div>       
+  <nav>
+    <ul>
+      <li><a href="#home">Home</a></li>
+      <li><a href="/admin"> Admin </a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
     <h1>Detalles del Instrumento</h1>
     <p>Tag: {{ instrument.tag.id }}</p>
     <p>Magnitud: {{ instrument.tag.get_magnitude_display }}</p>

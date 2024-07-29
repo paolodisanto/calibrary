@@ -9,7 +9,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Página Principal</title>
+    {% load static %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Calibrary</title>
+    <!-- Ruta al archivo CSS -->
+    <link rel="stylesheet" href="{% static 'core/style.css' %}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
     <style>
         #reader {
@@ -20,6 +25,23 @@
     </style>
 </head>
 <body>
+  <header>
+    <div class="left-image">
+      <img src="{% static 'core/logo.png' %}" alt="Logo" style="height: 100px;">
+    </div>
+    <div class="center-image">
+      <img src="{% static 'core/Nombre.png' %}" alt="Nombre" style="height: 300px;">
+    </div>       
+    <nav>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="/admin"> Admin </a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>    
     <h1>Página Principal</h1>
     <button onclick="openQRScanner()">Escanear Código QR</button>
     <div id="reader" style="display:none;"></div>
@@ -60,5 +82,6 @@
                 });
         }
     </script>
+  </main>
 </body>
 </html>
