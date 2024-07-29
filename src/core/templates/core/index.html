@@ -6,52 +6,59 @@
   </form>
   <a href="/admin"> ADMINISTRADOR </a>
 -->
-<!doctype html>
-<html lang="en">
-  <head>
-    {% load static %}
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Calibrary</title>
-    <!-- Ruta al archivo CSS -->
-    <link rel="stylesheet" href="{% static 'core/style.css' %}">
-  </head>
-  <body>
-    <header>
-        <div class="left-image">
-            <img src="{% static 'core/logo.png' %}" alt="Logo" style="height: 100px;">
-          </div>
-          <div class="center-image">
-            <img src="{% static 'core/Nombre.png' %}" alt="Nombre" style="height: 300px;">
-          </div>       
-      <nav>
-        <ul>
-          <li><a href="#home">Home</a></li>
-          <li><a href="/admin"> Admin </a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-      </nav>
-    </header>
-    
-    <main>
-      <section id="home">
-        <p><h2>Buscar Instrumento</h2></p>
-        Ingresar TAG
-        <p><h2><form action="/detail/" method="post">
-            {% csrf_token %}
-            <input type="input" name="tag_id">
-            <input type="submit" value="Buscar" class="btn btn-primary">
-          </form></p>
-      </section>
-      
-      <section id="contact">
-        <h2>Contact</h2>
-        <p>How to get in touch with you.</p>
-      </section>
-    </main>
-    
-    <footer>
-      <p>&copy; 2024 My MVP. All rights reserved.</p>
-    </footer>
-  </body>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Página Principal</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+    <style>
+        #reader {
+            width: 300px;
+            margin: auto;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Página Principal</h1>
+    <button onclick="openQRScanner()">Escanear Código QR</button>
+    <div id="reader" style="display:none;"></div>
+    <form id="qrForm" method="post" action="{% url 'search_item' %}">
+        {% csrf_token %}
+        <input type="hidden" id="qrValue" name="qr_value">
+    </form>
+    <script>
+        function openQRScanner() {
+            document.getElementById('reader').style.display = 'block';
+
+            // Inicializa el escáner con opciones
+            const html5QrCode = new Html5Qrcode("reader");
+
+            // Función para manejar el escaneo exitoso
+            const onScanSuccess = (decodedText, decodedResult) => {
+                // Detiene el escáner una vez que se ha leído el código QR
+                html5QrCode.stop().then(ignore => {
+                    // Oculta el lector de QR
+                    document.getElementById('reader').style.display = 'none';
+                    // Coloca el valor leído en el input oculto y envía el formulario
+                    document.getElementById('qrValue').value = decodedText;
+                    document.getElementById('qrForm').submit();
+                }).catch(err => {
+                    console.error("Error al detener el escáner: ", err);
+                });
+            };
+
+            // Función para manejar errores durante el escaneo
+            const onScanError = (errorMessage) => {
+                console.log(`Error de escaneo: ${errorMessage}`);
+            };
+
+            // Inicia el escáner
+            html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, onScanSuccess, onScanError)
+                .catch(err => {
+                    console.error("Error al iniciar el escáner: ", err);
+                });
+        }
+    </script>
+</body>
 </html>
