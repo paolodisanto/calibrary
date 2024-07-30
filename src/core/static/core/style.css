@@ -5,109 +5,33 @@
     font-style: normal;
 }
 
-/* Basic Reset */
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-  
- /* Body Styling */
-body {
-    line-height: 1.6;
-    padding: 20px;
-    background-color: #f4f4f4;
-}
-
-  /* General header styling */
-header {
-    background: #f9f8f8;
-    color: #fbfafa;
-    /*padding: 0px 0;*/
+.center {
     text-align: center;
-    margin-bottom: 0px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 150px;
-}
-    
-/* Left image styling */
-header .left-image {
-    margin-left: 10px;
 }
 
-header .left-image img {
-    height: 50px; /* Adjust size as needed */
-}
-
-/* Center image styling */
-header .center-image {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-}
-
-header .center-image img {
-    height: 50px; /* Adjust size as needed */
-}  
-
-/* Navigation styling */
-header nav {    
-    margin-right: 10px;
-}
-
-header nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    gap: 15px;
-}
-
-header nav ul li {
-    display: inline;
-}
-
-header nav ul li a {
-    color: #0574c4;
-    text-decoration: none;
-    font-family: 'Arista', Arial; /* Apply the Arista font */
-}
-
-header nav ul li a:hover {
-    text-decoration: underline;
-}
-
-/* Ensure header elements align correctly */
-header h1 {
-    margin: 0;
-  }
-  
-/* Main styling */
-main {
-    display: flex;
-    flex-direction: column; /* Alinea los hijos verticalmente */
-    justify-content: center; /* Centra verticalmente */
-    /*align-items: center; /* Centra horizontalmente */
-    height: calc(100vh - 100px); /* Asegura que el main ocupe el espacio restante (ajusta la resta según el tamaño de tu header y footer) */
-    padding: 20px; /* Espacio alrededor del contenido */
-    box-sizing: border-box;
-    text-align: center; /* Centra el texto dentro del main */
-}
-
-/* Styling for paragraphs inside main */
-main p {
-    margin: 10px 0; /* Ajusta el margen para la separación vertical */
-}
-
-/* Footer styling */
-footer {
+#reader-container {
     text-align: center;
-    padding: 10px 0;
-    background: #0e5dd4;
-    color: #fff;
-    border-radius: 5px;
-    position: relative; /* Ajusta la posición del footer */
+    margin: 10px;
+    min-height: 500px;
+}
+#reader {
+    margin: auto;
+    max-width: 400px;
+    max-height: 400px;
+}
+
+#animation {
+    width: 400px;
+    height: 400px;
+    margin: auto;
+    padding: 0 10px;
+}
+
+#details tr td:first-child {
+    font-weight: bold;
+    text-align: right;
+}
+#details tr td:nth-child(2) {
+
+    text-align: left;
 }

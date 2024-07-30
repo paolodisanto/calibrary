@@ -2,10 +2,10 @@
 {% load static %}
 
 {% block extrahead %}
-{{ block.super }}
-<link rel="stylesheet" type="text/css" href="{% static 'core/admin_custom.css' %}">
-<!--<link rel="stylesheet" type="text/css" href="{% static 'custom_admin/custom_styles.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'core/style.css' %}"> -->
+    <link rel="stylesheet" type="text/css" href="{% static 'core/admin_custom.css' %}">
+    <!--<link rel="stylesheet" type="text/css" href="{% static 'custom_admin/custom_styles.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'core/style.css' %}"> -->
+    {{ block.super }}
 {% endblock %}
 
 {% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}

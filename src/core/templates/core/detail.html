@@ -1,56 +1,77 @@
-<!--
-{% if instrument %}
-    {{instrument}}
-    {{instrument.location}}
-    {{instrument.brand}}
-    {{instrument.tag.get_technology_display}}
-{% else %}
-    <p>No hay instrumentos cargados con ese TAG</p>
-{% endif %}
--->
-<!DOCTYPE html>
-<html>
-<head>
-    {% load static %}
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Detalles del Instrumento</title>
-    <!-- Ruta al archivo CSS -->
-    <link rel="stylesheet" href="{% static 'core/style.css' %}">
-</head>
-<body>
-  <header>
-    <div class="left-image">
-        <img src="{% static 'core/logo.png' %}" alt="Logo" style="height: 100px;">
-      </div>
-      <div class="center-image">
-        <img src="{% static 'core/Nombre.png' %}" alt="Nombre" style="height: 300px;">
-      </div>       
-  <nav>
-    <ul>
-      <li><a href="#home">Home</a></li>
-      <li><a href="/admin"> Admin </a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-  </nav>
-</header>
-    <h1>Detalles del Instrumento</h1>
-    <p>Tag: {{ instrument.tag.id }}</p>
-    <p>Magnitud: {{ instrument.tag.get_magnitude_display }}</p>
-    <p>Tecnología: {{ instrument.tag.get_technology_display }}</p>
-    <p>Display: {{ instrument.tag.get_display_display }}</p>
-    <p>Descripción: {{ instrument.tag.description }}</p>
-    <p>Ubicación: {{ instrument.location.name }}</p>
-    <p>Lugar de montaje: {{ instrument.location_comments }}</p>
-    <p>Marca: {{ instrument.brand }}</p>
-    <p>Modelo: {{ instrument.model }}</p>
-    <p>Rango: {{ instrument.range }}</p>
-    <p>Unidad: {{ instrument.unit }}</p>
-    <p>Conexión de proceso: {{ instrument.process_connection }}</p>
-    <p>Número de serie: {{ instrument.serial_number }}</p>
-    <p>Contrastable: {{ instrument.traceable }}</p>
-    <p>Fecha de baja: {{ instrument.removal_date }}</p>
-    <p>Razón del baja: {{ instrument.removal_reason }}</p>
-    <a href="{% url 'index' %}">Volver a la página principal</a>
-</body>
-</html>
+{% extends "core/base.html" %}
+
+{% block content %}
+    <h2 class="h2">Detalles del Instrumento</h2>
+    <div class="table-responsive" id="details">
+    <table class="table table-hover table-xs align-middle">
+     <tr>
+        <td>Tag:</td>
+        <td>{{ instrument.tag.id }}</td>
+    </tr>
+    <tr>
+        <td class="right">Magnitud:</td>
+        <td>{{ instrument.tag.get_magnitude_display }}</td>
+    </tr>
+    <tr>
+        <td>Tecnología:</td>
+        <td>{{ instrument.tag.get_technology_display }}</td>
+    </tr>
+    <tr>
+        <td>Display:</td>
+        <td>{{ instrument.tag.get_display_display }}</td>
+    </tr>
+    <tr>
+        <td>Descripción:</td>
+        <td>{{ instrument.tag.description }}</td>
+    </tr>
+    <tr>
+        <td>Ubicación:</td>
+        <td>{{ instrument.location.name }}</td>
+    </tr>
+    <tr>
+        <td>Lugar de montaje:</td>
+        <td>{{ instrument.location_comments }}</td>
+    </tr>
+    <tr>
+        <td>Marca:</td>
+        <td>{{ instrument.brand }}</td>
+    </tr>
+    <tr>
+        <td>Modelo:</td>
+        <td>{{ instrument.model }}</td>
+    </tr>
+    <tr>
+        <td>Rango:</td>
+        <td>{{ instrument.range }}</td>
+    </tr>
+    <tr>
+        <td>Unidad:</td>
+        <td>{{ instrument.unit }}</td>
+    </tr>
+    <tr>
+        <td>Conexión de proceso:</td>
+        <td>{{ instrument.process_connection }}</td>
+    </tr>
+    <tr>
+        <td>Número de serie:</td>
+        <td>{{ instrument.serial_number|default_if_none:"-" }}</td>
+    </tr>
+    <tr>
+        <td>Contrastable:</td>
+        <td>{{ instrument.traceable|yesno:"Si,No" }}</td>
+    </tr>
+    {% if instrument.removal_date %}
+    <tr>
+        <td>Fecha de baja:</td>
+        <td>{{ instrument.removal_date }}</td>
+    </tr>
+    <tr>
+        <td>Razón del baja:</td>
+        <td>{{ instrument.removal_reason }}</td>
+    </tr>
+    {% endif %}
+    </table>
+    </div>
+
+    <a class="btn btn-primary" href="{% url 'index' %}">Volver a la página principal</a>
+{% endblock %}

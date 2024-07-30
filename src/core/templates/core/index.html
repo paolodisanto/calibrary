@@ -1,87 +1,53 @@
-<!--
-<form action="/detail/" method="post">
-    {% csrf_token %}
-    <input type="input" name="tag_id">
-    <input type="submit" value="Buscar" class="btn btn-primary">
-  </form>
-  <a href="/admin"> ADMINISTRADOR </a>
--->
-<!DOCTYPE html>
-<html>
-<head>
-    {% load static %}
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Calibrary</title>
-    <!-- Ruta al archivo CSS -->
-    <link rel="stylesheet" href="{% static 'core/style.css' %}">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
-    <style>
-        #reader {
-            width: 300px;
-            margin: auto;
-            border: 1px solid black;
-        }
-    </style>
-</head>
-<body>
-  <header>
-    <div class="left-image">
-      <img src="{% static 'core/logo.png' %}" alt="Logo" style="height: 100px;">
-    </div>
-    <div class="center-image">
-      <img src="{% static 'core/Nombre.png' %}" alt="Nombre" style="height: 300px;">
-    </div>       
-    <nav>
-      <ul>
-        <li><a href="#home">Home</a></li>
-        <li><a href="/admin"> Admin </a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </nav>
-  </header>
+{% extends "core/base.html" %}
+{% load static %}
+{% block content %}
+    <h1 class="h2">Buscador de intrumentos</h1>
+    <div id="reader-container" class="flex-container ">
+        <div id="reader" style="display:none;"></div>
+        <div id="animation">
+            <img src="{% static "core/scan-qr-code.gif" %}" />
+        </div>
 
-  <main>    
-    <h1>Página Principal</h1>
-    <button onclick="openQRScanner()">Escanear Código QR</button>
-    <div id="reader" style="display:none;"></div>
+    </div>
+    <button class="btn btn-success" onclick="openQRScanner()">Escanear Código QR</button>
     <form id="qrForm" method="post" action="{% url 'search_item' %}">
         {% csrf_token %}
-        <input type="hidden" id="qrValue" name="qr_value">
+        <input type="hidden" id="qrValue" name="qr_value"/>
     </form>
-    <script>
-        function openQRScanner() {
-            document.getElementById('reader').style.display = 'block';
+{% endblock %}
+{% block extra_javascript %}
+<script>
+    function openQRScanner() {
+        document.getElementById('reader').style.display = 'block';
+        document.getElementById('animation').style.display = 'none';
 
-            // Inicializa el escáner con opciones
-            const html5QrCode = new Html5Qrcode("reader");
+        // Inicializa el escáner con opciones
+        const html5QrCode = new Html5Qrcode("reader");
 
-            // Función para manejar el escaneo exitoso
-            const onScanSuccess = (decodedText, decodedResult) => {
-                // Detiene el escáner una vez que se ha leído el código QR
-                html5QrCode.stop().then(ignore => {
-                    // Oculta el lector de QR
-                    document.getElementById('reader').style.display = 'none';
-                    // Coloca el valor leído en el input oculto y envía el formulario
-                    document.getElementById('qrValue').value = decodedText;
-                    document.getElementById('qrForm').submit();
-                }).catch(err => {
-                    console.error("Error al detener el escáner: ", err);
-                });
-            };
+        // Función para manejar el escaneo exitoso
+        const onScanSuccess = (decodedText, decodedResult) => {
+            // Detiene el escáner una vez que se ha leído el código QR
+            html5QrCode.stop().then(ignore => {
+                // Oculta el lector de QR
+                document.getElementById('reader').style.display = 'none';
+                // Coloca el valor leído en el input oculto y envía el formulario
+                document.getElementById('qrValue').value = decodedText;
+                document.getElementById('qrForm').submit();
+            }).catch(err => {
+                console.error("Error al detener el escáner: ", err);
+            });
+        };
 
-            // Función para manejar errores durante el escaneo
-            const onScanError = (errorMessage) => {
-                console.log(`Error de escaneo: ${errorMessage}`);
-            };
+        // Función para manejar errores durante el escaneo
+        const onScanError = (errorMessage) => {
+            console.log(`Error de escaneo: ${errorMessage}`);
+        };
 
-            // Inicia el escáner
-            html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, onScanSuccess, onScanError)
-                .catch(err => {
-                    console.error("Error al iniciar el escáner: ", err);
-                });
-        }
-    </script>
-  </main>
-</body>
-</html>
+        // Inicia el escáner
+        html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, onScanSuccess, onScanError)
+            .catch(err => {
+                console.error("Error al iniciar el escáner: ", err);
+            });
+    }
+</script>
+{% endblock %}
