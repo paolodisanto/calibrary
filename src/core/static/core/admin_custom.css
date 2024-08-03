@@ -5,43 +5,44 @@
     font-style: normal;
 }
 
-/* Cambiar el color de fondo de la barra superior del administrador de Django */
+
 #header {
     font-family: 'Arista', sans-serif;
-    background: #f9f8f8; /* Cambia este valor al color que desees */
+    background: #f9f8f8; 
 }
+
 
 #header h1 {
-    font-size: 40px;  /* Adjust font size as needed */
-    line-height: 1.5;  /* Adjust line height as needed */
+    font-size: 40px; 
+    line-height: 1.5; 
 }
 
-/* Cambiar el color del texto de la cabecera */
+
 #branding h1#site-name a {
-    color: #0574c4; /* Cambia a cualquier color que prefieras */
+    color: #0574c4;
 }
 
-/* Cambiar el color del texto "Welcome" y el nombre de usuario (por ejemplo, "admin") */
+
 #user-tools {
-    color: #0574c4; /* Cambia a cualquier color que prefieras */
+    color: #0574c4;
 }
 
-/* Específicamente para enlaces dentro de user-tools */
+
 #user-tools a {
-    color: #0574c4; /* Cambia a cualquier color que prefieras */
+    color: #0574c4;
 }
 
-/* Si necesitas un color diferente para el nombre de usuario */
+
 #user-tools strong {
-    color: #0574c4; /* Cambia a cualquier color que prefieras */
+    color: #0574c4;
 }
 
-/* Cambiar el color del texto del enlace "View site" */
+
 #user-tools a[href*="/"] {
-    color: #0574c4; /* Cambia a cualquier color que prefieras */
+    color: #0574c4;
 }
 
-/* Cambiar el color del enlace "Log out" */
+
 #user-tools a[href*="logout"] {
-    color: #0574c4; /* Cambia a cualquier color que prefieras */
+    color: #0574c4;
 }
