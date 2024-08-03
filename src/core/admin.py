@@ -33,8 +33,10 @@ class RemovalDateFilter(SimpleListFilter):
 
 class InstrumentAdmin(admin.ModelAdmin):
     form = InstrumentForm
+    
     default_list_display = (
-        'id', 'tag', 'get_tag_description', 'get_tag_magnitude_display', 'get_tag_technology_display', 'get_tag_display_display', 'location', 'location_comments' , 'traceable'
+        'id', 'tag', 'get_tag_description', 'get_tag_magnitude_display', 'get_tag_technology_display',
+        'get_tag_display_display', 'location', 'location_comments' , 'traceable'
     )
     
     additional_fields = ('removal_date', 'removal_reason')
@@ -48,11 +50,16 @@ class InstrumentAdmin(admin.ModelAdmin):
     
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
-        if not obj:
-            form.base_fields['magnitude'].initial = None
-            form.base_fields['technology'].initial = None
-            form.base_fields['display'].initial = None
-            form.base_fields['description'].initial = None
+        if obj:  # If editing an existing instance
+            form.base_fields['magnitude'].initial = obj.tag.magnitude
+            form.base_fields['technology'].initial = obj.tag.technology
+            form.base_fields['display'].initial = obj.tag.display
+            form.base_fields['description'].initial = obj.tag.description
+        else:  # If creating a new instance
+            form.base_fields['magnitude'].initial = ''
+            form.base_fields['technology'].initial = ''
+            form.base_fields['display'].initial = ''
+            form.base_fields['description'].initial = ''
         return form
     
     def get_queryset(self, request):
