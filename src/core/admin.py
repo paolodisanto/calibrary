@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter #Se agrega para poder realizar filtros personalizados en el admin de django
 from django.utils.html import format_html
+from .form import InstrumentForm #, TagForm
 from core.models import (
     SequentialTag, Tag, Location, Instrument, SetUp,
     Check, PatternInstrument, Contrast, Attachment
@@ -31,6 +32,7 @@ class RemovalDateFilter(SimpleListFilter):
     
 
 class InstrumentAdmin(admin.ModelAdmin):
+    form = InstrumentForm
     default_list_display = (
         'id', 'tag', 'get_tag_description', 'get_tag_magnitude_display', 'get_tag_technology_display', 'get_tag_display_display', 'location', 'location_comments' , 'traceable'
     )
@@ -43,6 +45,15 @@ class InstrumentAdmin(admin.ModelAdmin):
             return self.default_list_display + self.additional_fields
         
         return self.default_list_display
+    
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if not obj:
+            form.base_fields['magnitude'].initial = None
+            form.base_fields['technology'].initial = None
+            form.base_fields['display'].initial = None
+            form.base_fields['description'].initial = None
+        return form
     
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -86,6 +97,8 @@ class TagAdmin(admin.ModelAdmin):
     list_filter = ('id', 'magnitude', 'technology', 'display', 'description')
     actions = ['generate_qr_codes']
     readonly_fields = ('qr_code',)
+    #form = TagForm
+    #readonly_fields = ['id']
 
     def generate_qr_codes(self, request, queryset):
         for tag in queryset:
@@ -100,6 +113,18 @@ class TagAdmin(admin.ModelAdmin):
         return "No QR code"
     qr_code_image.short_description = "QR Code"
 
+    """
+    def save_model(self, request, obj, form, change):
+        if not change:
+            # Solo generar el ID si es un nuevo objeto
+            obj.id = Tag.create_with_sequential_id(
+                magnitude=form.cleaned_data['magnitude'],
+                technology=form.cleaned_data['technology'],
+                display=form.cleaned_data['display'],
+                description=form.cleaned_data['description']
+            ).id
+        super().save_model(request, obj, form, change)
+"""
 
 class SetUpAdmin(admin.ModelAdmin):
     list_display = ('id', 'instrument', 'date', 'gdc_type', 'gdc_number', 'author', 'alarm_set', 'trip_set', 'comments')
