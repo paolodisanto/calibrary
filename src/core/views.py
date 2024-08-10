@@ -62,3 +62,19 @@ def qr_code_view(request):
     qr_url = reverse('generate_qr', kwargs={'tag': tag})
     return render(request, 'myapp/qr_code.html', {'qr_url': qr_url})
 """
+
+def instrument_detail(request, tag_id):
+    instrument = get_object_or_404(Instrument, tag__id=tag_id)
+    
+    checks = instrument.checks.all()
+    contrasts = instrument.contrasts.all()
+    setups = instrument.setups.all()
+
+    context = {
+        'instrument': instrument,
+        'checks': checks,
+        'contrasts': contrasts,
+        'setups': setups,
+    }
+    
+    return render(request, 'core/instrument_detail.html', context)

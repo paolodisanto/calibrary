@@ -1,6 +1,6 @@
 from django.db import models, transaction
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey    
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 import qrcode
 import os
 from io import BytesIO
@@ -132,12 +132,47 @@ class Instrument(models.Model):
     removal_date = models.DateTimeField(blank=True, null=True)
     removal_reason = models.CharField(blank=True, null=True, max_length=100)
     
+    checks = GenericRelation('Check')
+    contrasts = GenericRelation('Contrast')
+    setups = GenericRelation('Setup')
+    
     def __str__(self):
         return f'{self.tag}'
+    
+    def get_related_data(self):
+        """
+        Devuelve todas las instancias de Check, Contrast, y SetUp relacionadas con este instrumento,
+        junto con los archivos adjuntos, si los tienen.
+        """
+        related_data = {
+            'checks': [],
+            'contrasts': [],
+            'setups': []
+        }
+        
+        # Recuperar instancias de Check
+        checks = Check.objects.filter(instrument=self)
+        for check in checks:
+            attachments = Attachment.objects.filter(content_object=check)
+            related_data['checks'].append({'instance': check, 'attachments': attachments})
+        
+        # Recuperar instancias de Contrast
+        contrasts = Contrast.objects.filter(instrument=self)
+        for contrast in contrasts:
+            attachments = Attachment.objects.filter(content_object=contrast)
+            related_data['contrasts'].append({'instance': contrast, 'attachments': attachments})
+        
+        # Recuperar instancias de SetUp
+        setups = SetUp.objects.filter(instrument=self)
+        for setup in setups:
+            attachments = Attachment.objects.filter(content_object=setup)
+            related_data['setups'].append({'instance': setup, 'attachments': attachments})
+        
+        return related_data
 
 
 class SetUp(models.Model):
-    instrument = models.ForeignKey(Instrument, on_delete=models.CASCADE)
+    instrument = models.ForeignKey(Instrument, on_delete=models.CASCADE, related_name='setups')
     date = models.DateTimeField() #auto_now_add=True)
     gdc_type = models.CharField(max_length=50)
     gdc_number = models.CharField(max_length=50)
@@ -151,7 +186,7 @@ class SetUp(models.Model):
 
 
 class Check (models.Model):
-    instrument = models.ForeignKey(Instrument, on_delete=models.CASCADE)
+    instrument = models.ForeignKey(Instrument, on_delete=models.CASCADE, related_name='checks')
     date = models.DateTimeField(auto_now_add=True)
     OPTIONS_RESULT = [
         ('O', 'OK'),
@@ -178,7 +213,7 @@ class PatternInstrument (models.Model):
 
 
 class Contrast (models.Model):
-    instrument = models.ForeignKey(Instrument, on_delete=models.CASCADE)
+    instrument = models.ForeignKey(Instrument, on_delete=models.CASCADE, related_name='contrasts')
     date = models.DateTimeField(auto_now_add=True)
     OPTIONS_RESULT = [
         ('O', 'OK'),
@@ -222,4 +257,7 @@ class Meta:
 
 def __str__(self):
     return self.table.name
+
+
+   
     

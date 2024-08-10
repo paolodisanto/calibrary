@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Instrument Detail</title>
+</head>
+<body>
+    <h1>Instrument Details</h1>
+    <p>Tag ID: {{ instrument.tag.id }}</p>
+    <p>Location: {{ instrument.location.name }}</p>
+    <p>Description: {{ instrument.tag.description }}</p>
+
+    <h2>Checks</h2>
+    {% if checks %}
+        <ul>
+        {% for check in checks %}
+            <li>
+                <p>Date: {{ check.date }}</p>
+                <p>Result: {{ check.result }}</p>
+                <p>Comments: {{ check.comments }}</p>
+                <!-- Puedes agregar más detalles aquí -->
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No checks found.</p>
+    {% endif %}
+
+    <h2>Contrasts</h2>
+    {% if contrasts %}
+        <ul>
+        {% for contrast in contrasts %}
+            <li>
+                <p>Date: {{ contrast.date }}</p>
+                <p>Result: {{ contrast.result }}</p>
+                <p>Comments: {{ contrast.comments }}</p>
+                <!-- Puedes agregar más detalles aquí -->
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No contrasts found.</p>
+    {% endif %}
+
+    <h2>SetUps</h2>
+    {% if setups %}
+        <ul>
+        {% for setup in setups %}
+            <li>
+                <p>Date: {{ setup.date }}</p>
+                <p>GDC Type: {{ setup.gdc_type }}</p>
+                <p>GDC Number: {{ setup.gdc_number }}</p>
+                <p>Comments: {{ setup.comments }}</p>
+                <!-- Puedes agregar más detalles aquí -->
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No setups found.</p>
+    {% endif %}
+</body>
+</html>

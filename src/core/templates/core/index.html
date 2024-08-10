@@ -7,7 +7,6 @@
         <div id="animation">
             <img src="{% static "core/scan-qr-code.gif" %}" />
         </div>
-
     </div>
     <button class="btn btn-success" onclick="openQRScanner()">Escanear Código QR</button>
     <form id="qrForm" method="post" action="{% url 'search_item' %}">
@@ -16,6 +15,7 @@
     </form>
 {% endblock %}
 {% block extra_javascript %}
+<script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
 <script>
     function openQRScanner() {
         document.getElementById('reader').style.display = 'block';
@@ -43,11 +43,24 @@
             console.log(`Error de escaneo: ${errorMessage}`);
         };
 
-        // Inicia el escáner
-        html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, onScanSuccess, onScanError)
-            .catch(err => {
-                console.error("Error al iniciar el escáner: ", err);
-            });
+        // Verifica si el navegador soporta HTTPS y si se han otorgado permisos de cámara
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    stream.getTracks().forEach(track => track.stop()); // Cierra la cámara inmediatamente después de obtener los permisos
+
+                    // Inicia el escáner
+                    html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, onScanSuccess, onScanError)
+                        .catch(err => {
+                            console.error("Error al iniciar el escáner: ", err);
+                        });
+                })
+                .catch(err => {
+                    console.error("Error al acceder a la cámara: ", err);
+                });
+        } else {
+            console.error("Navegador no compatible con acceso a la cámara.");
+        }
     }
 </script>
 {% endblock %}
