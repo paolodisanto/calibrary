@@ -399,4 +399,7 @@ FodyWeavers.xsd
 .venv/
 .vscode/
 staticfiles/
+media/
 src/db.sqlite3
+
+.idea/

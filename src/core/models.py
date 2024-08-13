@@ -131,11 +131,7 @@ class Instrument(models.Model):
     traceable = models.BooleanField(default=False)
     removal_date = models.DateTimeField(blank=True, null=True)
     removal_reason = models.CharField(blank=True, null=True, max_length=100)
-    
-    checks = GenericRelation('Check')
-    contrasts = GenericRelation('Contrast')
-    setups = GenericRelation('Setup')
-    
+
     def __str__(self):
         return f'{self.tag}'
     
@@ -171,6 +167,22 @@ class Instrument(models.Model):
         return related_data
 
 
+class Attachment(models.Model):
+    """
+    Modelo para crear una tabla de adjuntos con un atributo de claves genericas,
+    el cual se usa para indexar a cada tabla que lleve adjuntos.
+
+    Guarda una referencia al tipo de contenido (modelo) al que está asociado este adjunto.
+    """
+    table = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    table_instance = models.PositiveIntegerField()
+    content_object = GenericForeignKey('table', 'table_instance')
+    media_path = models.FileField(upload_to='attachments/')
+    name = models.CharField(max_length=50)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    comments = models.TextField(blank=True, null=True)
+
+
 class SetUp(models.Model):
     instrument = models.ForeignKey(Instrument, on_delete=models.CASCADE, related_name='setups')
     date = models.DateTimeField() #auto_now_add=True)
@@ -180,7 +192,8 @@ class SetUp(models.Model):
     alarm_set = models.FloatField(blank=True, null=True)
     trip_set = models.FloatField()
     comments = models.CharField(max_length=100)
-    
+    attachments = GenericRelation(Attachment, object_id_field='table_instance', content_type_field='table')
+
     def __str__(self):
         return f'{self.date}'
 
@@ -196,7 +209,8 @@ class Check (models.Model):
     result = models.CharField(choices=OPTIONS_RESULT, max_length=1)
     author = models.CharField(max_length=50)
     comments = models.CharField(max_length=100)
-    
+    attachments = GenericRelation(Attachment, object_id_field='table_instance', content_type_field='table')
+
     def __str__(self):
         return f'{self.date}'
 
@@ -207,6 +221,7 @@ class PatternInstrument (models.Model):
     calibration_lab = models.CharField(max_length=20)
     calibration_number = models.CharField(max_length=20)
     comments = models.CharField(max_length=100, blank=True, null=True)
+    attachments = GenericRelation(Attachment, object_id_field='table_instance', content_type_field='table')
     
     def __str__(self):
         return f'{self.instrument}'
@@ -225,27 +240,12 @@ class Contrast (models.Model):
     expiration = models.DateField()
     p_instrument = models.OneToOneField (PatternInstrument, on_delete=models.RESTRICT)
     comments = models.CharField(max_length=100, blank=True, null=True)
-    
+    attachments = GenericRelation(Attachment, object_id_field='table_instance', content_type_field='table')
+
     def __str__(self):
         return f'{self.date}'
 
 
-class Attachment (models.Model):
-    """
-    Modelo para crear una tabla de adjuntos con un atributo de claves genericas,
-    el cual se usa para indexar a cada tabla que lleve adjuntos.
-    
-    Guarda una referencia al tipo de contenido (modelo) al que está asociado este adjunto.  
-    """
-    table = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    table_instance = models.PositiveIntegerField()
-    content_object = GenericForeignKey('table', 'table_instance')
-    media_path = models.FileField(upload_to='attachments/')
-    name = models.CharField (max_length=50)
-    uploaded_at = models.DateTimeField(auto_now_add=True)
-    comments = models.TextField(blank=True, null=True)
-    
-    
 class Meta:
     """
     Se crea un índice en los campos table y table_id para mejorar  el rendimiento de las consultas

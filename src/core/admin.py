@@ -1,5 +1,6 @@
 from django.contrib import admin, messages
 from django.contrib.admin import SimpleListFilter #Se agrega para poder realizar filtros personalizados en el admin de django
+from django.contrib.contenttypes.admin import GenericTabularInline
 from django.utils.html import format_html
 from .form import InstrumentForm #, TagForm
 from django.urls import reverse
@@ -30,7 +31,15 @@ class RemovalDateFilter(SimpleListFilter):
         if self.value() == 'Not None':
             return queryset.filter(removal_date__isnull=False)
         return queryset
-    
+
+
+class AttachmentInline(GenericTabularInline):
+    model = Attachment
+    # fk_name = "setups"
+    ct_field = "table"
+    ct_fk_field = "table_instance"
+    extra = 1
+
 
 class InstrumentAdmin(admin.ModelAdmin):
     form = InstrumentForm
@@ -54,7 +63,7 @@ class InstrumentAdmin(admin.ModelAdmin):
         if not change:  # Only show message when a new instrument is created
             tag = obj.tag
             qr_code_url = obj.tag.qr_code.url if obj.tag.qr_code else None
-#linea para mensajes: messages.success(request, f'Instrumento creado con TAG: {tag} y QR generado: {qr_code_url}')
+# linea para mensajes: messages.success(request, f'Instrumento creado con TAG: {tag} y QR generado: {qr_code_url}')
     
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -134,22 +143,35 @@ class TagAdmin(admin.ModelAdmin):
 
 class SetUpAdmin(admin.ModelAdmin):
     list_display = ('id', 'instrument', 'date', 'gdc_type', 'gdc_number', 'author', 'alarm_set', 'trip_set', 'comments')
+    inlines = [
+        AttachmentInline
+    ]
    
 
 class CheckAdmin(admin.ModelAdmin):
     list_display = ('id', 'instrument', 'date', 'result', 'author', 'comments')
+    inlines = [
+        AttachmentInline
+    ]
 
 
 class PatternInstrumentAdmin(admin.ModelAdmin):
     list_display = ('id', 'instrument', 'calibration_date', 'calibration_lab', 'calibration_number', 'comments')
+    inlines = [
+        AttachmentInline
+    ]
 
 
 class ContrastAdmin(admin.ModelAdmin):
     list_display = ('id', 'instrument', 'date', 'result', 'author', 'expiration', 'p_instrument', 'comments')
+    inlines = [
+        AttachmentInline
+    ]
 
 
-class AttachmentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'table', 'table_instance', 'media_path', 'name', 'uploaded_at', 'comments')
+# No sé si necesitamos esto, ya que ahora lo tenemos inline en Setups, checks, Contracts y Pattern Instruments
+# class AttachmentAdmin(admin.ModelAdmin):
+#    list_display = ('id', 'table', 'table_instance', 'media_path', 'name', 'uploaded_at', 'comments')
 
 
 admin.site.register(SequentialTag, SequentialTagAdmin)
@@ -160,4 +182,4 @@ admin.site.register(SetUp, SetUpAdmin)
 admin.site.register(Check, CheckAdmin)
 admin.site.register(PatternInstrument, PatternInstrumentAdmin)
 admin.site.register(Contrast, ContrastAdmin)
-admin.site.register(Attachment, AttachmentAdmin)
+# admin.site.register(Attachment, AttachmentAdmin)

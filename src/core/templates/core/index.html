@@ -1,6 +1,7 @@
 {% extends "core/base.html" %}
 {% load static %}
 {% block content %}
+    <div class="center">
     <h1 class="h2">Buscador de intrumentos</h1>
     <div id="reader-container" class="flex-container ">
         <div id="reader" style="display:none;"></div>
@@ -13,6 +14,7 @@
         {% csrf_token %}
         <input type="hidden" id="qrValue" name="qr_value"/>
     </form>
+    </div>
 {% endblock %}
 {% block extra_javascript %}
 <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>

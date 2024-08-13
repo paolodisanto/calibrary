@@ -72,6 +72,6 @@
     {% endif %}
     </table>
     </div>
-
+    <a class="btn btn-info" href="{% url 'instrument_detail' instrument.tag.id %}">Ver más...</a>
     <a class="btn btn-primary" href="{% url 'index' %}">Volver a la página principal</a>
 {% endblock %}
