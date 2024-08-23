@@ -1,127 +1,233 @@
 {% extends "core/base.html" %}
 
 {% block content %}
-    <h1>Instrument Details</h1>
-    <p>Tag ID: {{ instrument.tag.id }}</p>
-    <p>Location: {{ instrument.location.name }}</p>
-    <p>Description: {{ instrument.tag.description }}</p>
+    <style>
+        .instrument-details {
+            font-size: 0.9em; /* Reducir el tamaño de la letra */
+        }
 
-    <h2>Checks</h2>
-    {% if checks %}
-        <ul>
-        {% for check in checks %}
-            <li>
-                <p>Date: {{ check.date }}</p>
-                <p>Result: {{ check.result }}</p>
-                <p>Comments: {{ check.comments }}</p>
-                {% if check.attachments.all %}
-                    <h4>Attachments</h4>
-                    <table class="table">
-                    <thead>
+        .instrument-details .table {
+            margin-bottom: 30px; /* Añadir espacio entre las tablas */
+        }
+
+        .instrument-details h2 {
+            margin-top: 40px; /* Separar las secciones con un margen mayor */
+        }
+
+        .custom-btn {
+            font-size: 0.8em; /* Tamaño de letra más pequeño */
+            padding: 5px 10px; /* Ajuste de padding para hacer el botón más pequeño */
+            background-color: #5bc0de; /* Color personalizado del botón */
+            border-color: #46b8da; /* Color de borde del botón */
+        }
+
+        .custom-btn:hover {
+            background-color: #31b0d5; /* Color del botón al hacer hover */
+            border-color: #269abc; /* Color de borde al hacer hover */
+        }
+
+        /* Nueva clase para alinear en una fila */
+        .instrument-details .info-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px; /* Espacio entre elementos */
+            align-items: center; /* Alinear verticalmente */
+            border-bottom: 1px solid #ddd; /* Línea de separación */
+            padding-bottom: 10px; /* Espacio debajo del contenido de la fila */
+            margin-bottom: 10px; /* Espacio entre filas */
+        }
+
+        .instrument-details .info-item {
+            flex: 1; /* Ocupa el mismo espacio en la fila */
+        }
+
+        .instrument-details .info-item strong {
+            display: block; /* Asegura que el texto en negrita esté en una línea separada */
+        }
+    </style>
+
+    <div class="instrument-details">
+        <h1>Instrument Details</h1>
+        <div class="info-row">
+            <div class="info-item">
+                <strong>Tag:</strong> {{ instrument.tag.id }}
+            </div>
+            <div class="info-item">
+                <strong>Location:</strong> {{ instrument.location.name }}
+            </div>
+            <div class="info-item">
+                <strong>Location Comments:</strong> {{ instrument.location_comments }}
+            </div>
+        </div>
+
+        <!-- Segunda fila de datos -->
+        <div class="info-row">
+            <div class="info-item">
+                <strong>Magnitud:</strong> {{ instrument.tag.get_magnitude_display }}
+            </div>
+            <div class="info-item">
+                <strong>Tecnologia:</strong> {{ instrument.tag.get_technology_display }}
+            </div>
+            <div class="info-item">
+                <strong>Display:</strong> {{ instrument.tag.get_display_display }}
+            </div>
+            <div class="info-item">
+                <strong>Description:</strong> {{ instrument.tag.description }}
+            </div>
+        </div>
+
+         <!-- Tercera fila de datos -->
+         <div class="info-row">
+            <div class="info-item">
+                <strong>Brand:</strong> {{ instrument.brand }}
+            </div>
+            <div class="info-item">
+                <strong>Model:</strong> {{ instrument.model }}
+            </div>
+            <div class="info-item">
+                <strong>Range:</strong> {{ instrument.range }}
+            </div>
+            <div class="info-item">
+                <strong>Unit:</strong> {{ instrument.unit }}
+            </div>
+            <div class="info-item">
+                <strong>Process Connection:</strong> {{ instrument.process_connection }}
+            </div>
+        </div>
+
+         <!-- Cuarta fila de datos -->
+         <div class="info-row">
+            <div class="info-item">
+                <strong>Serial:</strong> {{ instrument.serial }}
+            </div>
+            <div class="info-item">
+                <strong>Traceable:</strong> {{ instrument.traceable }}
+            </div>
+        </div>
+
+        <!-- Checks Table -->
+        <h2>Checks</h2>
+        {% if checks %}
+            <table class="table table-sm">
+                <thead>
                     <tr>
-                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Result</th>
                         <th>Comments</th>
-                        <th>Uploaded at</th>
-                        <th>Download</th>
+                        <th>Attachments</th>
                     </tr>
-                    </thead>
-                    <tbody>
-                        {% for attach in check.attachments.all %}
-                        <tr>
-                            <td>{{ attach.name }}</td>
-                            <td>{{ attach.comments }}</td>
-                            <td>{{ attach.uploaded_at }}</td>
-                            <td><a href="/media/{{ attach.media_path }}">Download</a></td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                    </table>
-
-                {% endif %}
-            </li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No checks found.</p>
-    {% endif %}
-
-    <h2>Contrasts</h2>
-    {% if contrasts %}
-        <ul>
-        {% for contrast in contrasts %}
-            <li>
-                <p>Date: {{ contrast.date }}</p>
-                <p>Result: {{ contrast.result }}</p>
-                <p>Comments: {{ contrast.comments }}</p>
-                {% if contrast.attachments.all %}
-                    <h4>Attachments</h4>
-                    <table class="table">
-                    <thead>
+                </thead>
+                <tbody>
+                    {% for check in checks %}
                     <tr>
-                        <th>Name</th>
-                        <th>Comments</th>
-                        <th>Uploaded at</th>
-                        <th>Download</th>
+                        <td>{{ check.date }}</td>
+                        <td>{{ check.get_result_display }}</td>
+                        <td>{{ check.comments }}</td>
+                        <td>
+                            {% if check.attachments.all %}
+                                <ul>
+                                    {% for attach in check.attachments.all %}
+                                    <li>
+                                        <a href="{{ attach.media_path.url }}">{{ attach.name }}</a> - {{ attach.comments }} ({{ attach.uploaded_at }})
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                No attachments
+                            {% endif %}
+                        </td>
                     </tr>
-                    </thead>
-                    <tbody>
-                        {% for attach in contrast.attachments.all %}
-                        <tr>
-                            <td>{{ attach.name }}</td>
-                            <td>{{ attach.comments }}</td>
-                            <td>{{ attach.uploaded_at }}</td>
-                            <td><a href="/media/{{ attach.media_path }}">Download</a></td>
-                        </tr>
                     {% endfor %}
-                    </tbody>
-                    </table>
+                </tbody>
+            </table>
+        {% else %}
+            <p>No checks found.</p>
+        {% endif %}
 
-                {% endif %}
-            </li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No contrasts found.</p>
-    {% endif %}
+        <a href="{% url 'admin:core_check_add' %}?instrument={{ instrument.id }}" class="btn custom-btn">Add New Check</a>
 
-    <h2>SetUps</h2>
-    {% if setups %}
-        <ul>
-        {% for setup in setups %}
-            <li>
-                <p>Date: {{ setup.date }}</p>
-                <p>GDC Type: {{ setup.gdc_type }}</p>
-                <p>GDC Number: {{ setup.gdc_number }}</p>
-                <p>Comments: {{ setup.comments }}</p>
-                {% if setup.attachments.all %}
-                    <h4>Attachments</h4>
-                    <table class="table">
-                    <thead>
+        <!-- Contrasts Table -->
+        <h2>Contrasts</h2>
+        {% if contrasts %}
+            <table class="table table-sm">
+                <thead>
                     <tr>
-                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Result</th>
                         <th>Comments</th>
-                        <th>Uploaded at</th>
-                        <th>Download</th>
+                        <th>Attachments</th>
                     </tr>
-                    </thead>
-                    <tbody>
-                        {% for attach in setup.attachments.all %}
-                        <tr>
-                            <td>{{ attach.name }}</td>
-                            <td>{{ attach.comments }}</td>
-                            <td>{{ attach.uploaded_at }}</td>
-                            <td><a href="/media/{{ attach.media_path }}">Download</a></td>
-                        </tr>
+                </thead>
+                <tbody>
+                    {% for contrast in contrasts %}
+                    <tr>
+                        <td>{{ contrast.date }}</td>
+                        <td>{{ contrast.get_result_display }}</td>
+                        <td>{{ contrast.comments }}</td>
+                        <td>
+                            {% if contrast.attachments.all %}
+                                <ul>
+                                    {% for attach in contrast.attachments.all %}
+                                    <li>
+                                        <a href="{{ attach.media_path.url }}">{{ attach.name }}</a> - {{ attach.comments }} ({{ attach.uploaded_at }})
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                No attachments
+                            {% endif %}
+                        </td>
+                    </tr>
                     {% endfor %}
-                    </tbody>
-                    </table>
+                </tbody>
+            </table>
+        {% else %}
+            <p>No contrasts found.</p>
+        {% endif %}
 
-                {% endif %}
-            </li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No setups found.</p>
-    {% endif %}
+        <a href="{% url 'admin:core_contrast_add' %}?instrument={{ instrument.id }}" class="btn custom-btn">Add New Contrast</a>
 
+        <!-- SetUps Table -->
+        <h2>SetUps</h2>
+        {% if setups %}
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>GDC Type</th>
+                        <th>GDC Number</th>
+                        <th>Comments</th>
+                        <th>Attachments</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for setup in setups %}
+                    <tr>
+                        <td>{{ setup.date }}</td>
+                        <td>{{ setup.gdc_type }}</td>
+                        <td>{{ setup.gdc_number }}</td>
+                        <td>{{ setup.comments }}</td>
+                        <td>
+                            {% if setup.attachments.all %}
+                                <ul>
+                                    {% for attach in setup.attachments.all %}
+                                    <li>
+                                        <a href="{{ attach.media_path.url }}">{{ attach.name }}</a> - {{ attach.comments }} ({{ attach.uploaded_at }})
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                No attachments
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No setups found.</p>
+        {% endif %}
+
+        <a href="{% url 'admin:core_setup_add' %}?instrument={{ instrument.id }}" class="btn custom-btn">Add New SetUp</a>
+    </div>
 {% endblock %}
