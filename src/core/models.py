@@ -6,6 +6,7 @@ import os
 from io import BytesIO
 from django.core.files import File
 from django.conf import settings
+from django.core.exceptions import ValidationError
 
 
 class SequentialTag(models.Model): 
@@ -163,6 +164,16 @@ class Instrument(models.Model):
         for setup in setups:
             attachments = Attachment.objects.filter(content_object=setup)
             related_data['setups'].append({'instance': setup, 'attachments': attachments})
+            
+        # Obtener el último 'SetUp' donde 'alarm_set' no sea None
+        latest_alarm_setup = setups.filter(alarm_set__isnull=False).order_by('-date').first()
+        
+        # Obtener el último 'SetUp' donde 'trip_set' no sea None
+        latest_trip_setup = setups.filter(trip_set__isnull=False).order_by('-date').first()
+        
+        # Añadir los resultados al diccionario de datos relacionados
+        related_data['latest_alarm_setup'] = latest_alarm_setup
+        related_data['latest_trip_setup'] = latest_trip_setup
         
         return related_data
 
@@ -190,12 +201,22 @@ class SetUp(models.Model):
     gdc_number = models.CharField(max_length=50)
     author = models.CharField(max_length=50)
     alarm_set = models.FloatField(blank=True, null=True)
-    trip_set = models.FloatField()
-    comments = models.CharField(max_length=100)
+    trip_set = models.FloatField(blank=True, null=True)
+    comments = models.CharField(max_length=100, blank=True, null=True)
     attachments = GenericRelation(Attachment, object_id_field='table_instance', content_type_field='table')
 
     def __str__(self):
         return f'{self.date}'
+    
+    def clean(self):
+        # Validar que al menos uno de los campos 'alarm_set' o 'trip_set' no sea None
+        if self.alarm_set is None and self.trip_set is None:
+            raise ValidationError('Al menos uno de los campos "alarm_set" o "trip_set" debe tener un valor.')
+    
+    def save(self, *args, **kwargs):
+        # Llamar al método clean antes de guardar
+        self.clean()
+        super().save(*args, **kwargs)
 
 
 class Check (models.Model):
