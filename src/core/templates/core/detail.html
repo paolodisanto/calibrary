@@ -49,7 +49,17 @@
             display: block; /* Asegura que el texto en negrita esté en una línea separada */
         }
     </style>
- 
+
+    <!-- Mostrar alerta de error si existe un mensaje -->
+    {% if error_message %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ error_message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
     <h2 class="centered-header">{{ instrument.tag.id }}</h2>
     <div class="instrument-details">
         <div class="info-row">
@@ -111,10 +121,9 @@
             <div class="info-item">
                 <strong>Contraste:</strong>{{ latest_contrast.get_result_display }} - {{ latest_contrast.date }}
             </div>
-            
         </div>
 
-        <!-- Septima fila de datos -->  
+        <!-- Séptima fila de datos -->  
         <div class="info-row">
             <div class="info-item">
                 <a href="{% url 'index' %}" class="btn custom-btn">Volver a la página principal</a>
@@ -123,4 +132,5 @@
                 <a href="{% url 'instrument_detail' instrument.tag.id %}" class="btn custom-btn">Ver más...</a>
             </div>
         </div>
+    </div>
 {% endblock %}
