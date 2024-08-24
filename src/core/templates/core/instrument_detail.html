@@ -58,6 +58,9 @@
             <div class="info-item">
                 <strong>Location Comments:</strong> {{ instrument.location_comments }}
             </div>
+            <div class="info-item">
+                <strong>Traceable:</strong> {{ instrument.traceable }}
+            </div>
         </div>
 
         <!-- Segunda fila de datos -->
@@ -95,13 +98,20 @@
             </div>
         </div>
 
-         <!-- Cuarta fila de datos -->
+        <!-- Cuarta fila de datos -->
+        <div class="info-row">
+            <div class="info-item">
+                <strong>Alarm:</strong> {{ latest_setup.alarm_set }}
+            </div>
+            <div class="info-item">
+                <strong>Trip:</strong> {{ latest_setup.trip_set }}
+            </div>
+        </div>
+
+         <!-- Quinta fila de datos -->
          <div class="info-row">
             <div class="info-item">
                 <strong>Serial:</strong> {{ instrument.serial }}
-            </div>
-            <div class="info-item">
-                <strong>Traceable:</strong> {{ instrument.traceable }}
             </div>
         </div>
 
@@ -197,6 +207,8 @@
                         <th>GDC Type</th>
                         <th>GDC Number</th>
                         <th>Comments</th>
+                        <th>Alarm</th>
+                        <th>Trip</th>
                         <th>Attachments</th>
                     </tr>
                 </thead>
@@ -207,6 +219,8 @@
                         <td>{{ setup.gdc_type }}</td>
                         <td>{{ setup.gdc_number }}</td>
                         <td>{{ setup.comments }}</td>
+                        <td>{{ setup.alarm_set }}</td>
+                        <td>{{ setup.trip_set }}</td>
                         <td>
                             {% if setup.attachments.all %}
                                 <ul>

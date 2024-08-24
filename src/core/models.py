@@ -178,7 +178,7 @@ class Attachment(models.Model):
     table_instance = models.PositiveIntegerField()
     content_object = GenericForeignKey('table', 'table_instance')
     media_path = models.FileField(upload_to='attachments/')
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, blank=True, null=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     comments = models.TextField(blank=True, null=True)
 
@@ -238,7 +238,7 @@ class Contrast (models.Model):
     result = models.CharField(choices=OPTIONS_RESULT, max_length=1)
     author = models.CharField(max_length=50)
     expiration = models.DateField()
-    p_instrument = models.OneToOneField (PatternInstrument, on_delete=models.RESTRICT)
+    p_instrument = models.ForeignKey(PatternInstrument, on_delete=models.RESTRICT)
     comments = models.CharField(max_length=100, blank=True, null=True)
     attachments = GenericRelation(Attachment, object_id_field='table_instance', content_type_field='table')
 

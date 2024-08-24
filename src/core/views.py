@@ -70,11 +70,15 @@ def instrument_detail(request, tag_id):
     contrasts = instrument.contrasts.all()
     setups = instrument.setups.all()
 
+    # Obtener la última instancia de SetUp
+    latest_setup = setups.order_by('-date').first()
+
     context = {
         'instrument': instrument,
         'checks': checks,
         'contrasts': contrasts,
         'setups': setups,
+        'latest_setup': latest_setup,
     }
     
     return render(request, 'core/instrument_detail.html', context)
