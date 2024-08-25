@@ -139,6 +139,9 @@ class InstrumentAdmin(admin.ModelAdmin):
             return self.readonly_fields + ('qr_code_display',)
         return self.readonly_fields
 
+    inlines = [
+            AttachmentInline
+        ]
 
 class SequentialTagAdmin(admin.ModelAdmin):
     list_display = ('prefix', 'latest')

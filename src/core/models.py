@@ -118,6 +118,22 @@ class Location(models.Model):
     def __str__(self):
         return self.name
     
+
+class Attachment(models.Model):
+    """
+    Modelo para crear una tabla de adjuntos con un atributo de claves genericas,
+    el cual se usa para indexar a cada tabla que lleve adjuntos.
+
+    Guarda una referencia al tipo de contenido (modelo) al que está asociado este adjunto.
+    """
+    table = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    table_instance = models.PositiveIntegerField()
+    content_object = GenericForeignKey('table', 'table_instance')
+    media_path = models.FileField(upload_to='attachments/')
+    name = models.CharField(max_length=50, blank=True, null=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    comments = models.TextField(blank=True, null=True)
+
  
 class Instrument(models.Model):
     tag = models.OneToOneField(Tag, on_delete=models.CASCADE)
@@ -132,6 +148,7 @@ class Instrument(models.Model):
     traceable = models.BooleanField(default=False)
     removal_date = models.DateTimeField(blank=True, null=True)
     removal_reason = models.CharField(blank=True, null=True, max_length=100)
+    attachments = GenericRelation(Attachment, object_id_field='table_instance', content_type_field='table')
 
     def __str__(self):
         return f'{self.tag}'
@@ -176,23 +193,7 @@ class Instrument(models.Model):
         related_data['latest_trip_setup'] = latest_trip_setup
         
         return related_data
-
-
-class Attachment(models.Model):
-    """
-    Modelo para crear una tabla de adjuntos con un atributo de claves genericas,
-    el cual se usa para indexar a cada tabla que lleve adjuntos.
-
-    Guarda una referencia al tipo de contenido (modelo) al que está asociado este adjunto.
-    """
-    table = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    table_instance = models.PositiveIntegerField()
-    content_object = GenericForeignKey('table', 'table_instance')
-    media_path = models.FileField(upload_to='attachments/')
-    name = models.CharField(max_length=50, blank=True, null=True)
-    uploaded_at = models.DateTimeField(auto_now_add=True)
-    comments = models.TextField(blank=True, null=True)
-
+    
 
 class SetUp(models.Model):
     instrument = models.ForeignKey(Instrument, on_delete=models.CASCADE, related_name='setups')
