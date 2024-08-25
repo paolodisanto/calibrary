@@ -43,7 +43,7 @@ def search_item(request, qr_value=None):
     if context is None:
         return render(request, 'core/search_item.html', {'error_message': 'QR inválido. Por favor, intente nuevamente.'})
     
-    return render(request, 'core/detail.html', context)
+    return render(request, 'core/instrument.html', context)
 
 def instrument_detail(request, tag_id):
     context = get_instrument_context(tag_id)
@@ -51,14 +51,3 @@ def instrument_detail(request, tag_id):
         return render(request, 'core/instrument_detail.html', {'error_message': 'Instrumento no encontrado. Por favor, intente nuevamente.'})
     
     return render(request, 'core/instrument_detail.html', context)
-
-def qr_code_view(request, tag_id):
-    tag = get_object_or_404(Tag, id=tag_id)
-    qr_code_url = tag.qr_code.url if tag.qr_code else None
-
-    context = {
-        'qr_code_url': qr_code_url,
-        'instrument': tag.instrument  # Asumiendo que Tag tiene una relación con Instrument
-    }
-
-    return render(request, 'core/qr_code_view.html', context)
