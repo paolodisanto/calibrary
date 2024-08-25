@@ -2,129 +2,186 @@
 
 {% block content %}
     <style>
+        .centered-header {
+            text-align: center;
+            margin-bottom: 30px; /* Espacio debajo del encabezado */
+        }
+
         .instrument-details {
-            font-size: 0.9em; /* Reducir el tamaño de la letra */
+            font-size: 0.9em;
         }
 
         .instrument-details .table {
-            margin-bottom: 30px; /* Añadir espacio entre las tablas */
+            margin-bottom: 30px;
         }
 
         .instrument-details h2 {
-            margin-top: 40px; /* Separar las secciones con un margen mayor */
+            margin-top: 40px;
         }
 
         .custom-btn {
-            font-size: 0.8em; /* Tamaño de letra más pequeño */
-            padding: 5px 10px; /* Ajuste de padding para hacer el botón más pequeño */
-            background-color: #5bc0de; /* Color personalizado del botón */
-            border-color: #46b8da; /* Color de borde del botón */
+            font-size: 0.8em;
+            padding: 5px 10px;
+            background-color: #5bc0de;
+            border-color: #46b8da;
         }
 
         .custom-btn:hover {
-            background-color: #31b0d5; /* Color del botón al hacer hover */
-            border-color: #269abc; /* Color de borde al hacer hover */
+            background-color: #31b0d5;
+            border-color: #269abc;
         }
 
-        /* Nueva clase para alinear en una fila */
+
         .instrument-details .info-row {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px; /* Espacio entre elementos */
-            align-items: center; /* Alinear verticalmente */
-            border-bottom: 1px solid #ddd; /* Línea de separación */
-            padding-bottom: 10px; /* Espacio debajo del contenido de la fila */
-            margin-bottom: 10px; /* Espacio entre filas */
+            flex-wrap: nowrap; /* Evita que los elementos se apilen */
+            gap: 10px;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            overflow-x: auto; /* Añade scroll horizontal si el contenido es muy grande */
         }
 
+        
         .instrument-details .info-item {
-            flex: 1; /* Ocupa el mismo espacio en la fila */
+            flex: 1;
+            min-width: 200px; /* Establece un ancho mínimo para cada elemento */
         }
 
         .instrument-details .info-item strong {
-            display: block; /* Asegura que el texto en negrita esté en una línea separada */
+            display: block;
+        }
+
+        /* Estilo general para todas las tablas */
+        .instrument-details .table th,
+        .instrument-details .table td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 8px;
+            min-width: 120px;
+        }
+
+        .instrument-details .table th {
+            font-weight: bold;
         }
     </style>
 
+    <h2 class="centered-header">{{ instrument.tag.id }}</h2>
     <div class="instrument-details">
-        <h1>Instrument Details</h1>
+
         <div class="info-row">
             <div class="info-item">
-                <strong>Tag:</strong> {{ instrument.tag.id }}
+                <strong>Ubicación:</strong> {{ instrument.location.name }}
             </div>
             <div class="info-item">
-                <strong>Location:</strong> {{ instrument.location.name }}
+                <strong>Lugar de montaje:</strong> {{ instrument.location_comments }}
             </div>
             <div class="info-item">
-                <strong>Location Comments:</strong> {{ instrument.location_comments }}
-            </div>
-            <div class="info-item">
-                <strong>Traceable:</strong> {{ instrument.traceable }}
+                <strong>Contrastable</strong> {{ instrument.traceable|yesno:"Si,No" }}
             </div>
         </div>
 
-        <!-- Segunda fila de datos -->
+        
         <div class="info-row">
             <div class="info-item">
                 <strong>Magnitud:</strong> {{ instrument.tag.get_magnitude_display }}
             </div>
             <div class="info-item">
-                <strong>Tecnologia:</strong> {{ instrument.tag.get_technology_display }}
+                <strong>Tecnología:</strong> {{ instrument.tag.get_technology_display }}
             </div>
             <div class="info-item">
                 <strong>Display:</strong> {{ instrument.tag.get_display_display }}
             </div>
             <div class="info-item">
-                <strong>Description:</strong> {{ instrument.tag.description }}
+                <strong>Descripción:</strong> {{ instrument.tag.description }}
             </div>
         </div>
 
-         <!-- Tercera fila de datos -->
-         <div class="info-row">
-            <div class="info-item">
-                <strong>Brand:</strong> {{ instrument.brand }}
-            </div>
-            <div class="info-item">
-                <strong>Model:</strong> {{ instrument.model }}
-            </div>
-            <div class="info-item">
-                <strong>Range:</strong> {{ instrument.range }}
-            </div>
-            <div class="info-item">
-                <strong>Unit:</strong> {{ instrument.unit }}
-            </div>
-            <div class="info-item">
-                <strong>Process Connection:</strong> {{ instrument.process_connection }}
-            </div>
-        </div>
 
-        <!-- Cuarta fila de datos -->
         <div class="info-row">
             <div class="info-item">
-                <strong>Alarm:</strong> {{ latest_alarm.alarm_set }}
+                <strong>Marca:</strong> {{ instrument.brand }}
             </div>
             <div class="info-item">
-                <strong>Trip:</strong> {{ latest_trip.trip_set }}
+                <strong>Modelo:</strong> {{ instrument.model }}
+            </div>
+            <div class="info-item">
+                <strong>Rango:</strong> {{ instrument.range }}
+            </div>
+            <div class="info-item">
+                <strong>Unidad:</strong> {{ instrument.unit }}
+            </div>
+            <div class="info-item">
+                <strong>Conexión de Proceso:</strong> {{ instrument.process_connection }}
             </div>
         </div>
 
-         <!-- Quinta fila de datos -->
-         <div class="info-row">
+
+        <div class="info-row">
             <div class="info-item">
-                <strong>Serial:</strong> {{ instrument.serial }}
+                <strong>Alarma:</strong> {{ latest_alarm.alarm_set }}
+            </div>
+            <div class="info-item">
+                <strong>Disparo:</strong> {{ latest_trip.trip_set }}
             </div>
         </div>
 
-        <!-- Checks Table -->
-        <h2>Checks</h2>
-        {% if checks %}
-            <table class="table table-sm">
+
+        <div class="info-row">
+            <div class="info-item">
+                <strong>Serial N°:</strong> {{ instrument.serial }}
+            </div>
+        </div>
+
+        <!-- Anexos Instrumento -->
+        <h2>Adjuntos del Instrumento</h2>
+        {% if attachments %}
+        <div class="table-responsive">
+            <table class="table table-sm setup-table">
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Result</th>
-                        <th>Comments</th>
-                        <th>Attachments</th>
+                        <th>Nombre</th>
+                        <th>Comentarios</th>
+                        <th>Fecha de Subida</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for attach in attachments %}
+                    <tr>
+                        <td>
+                            <a href="{{ attach.media_path.url }}">{{ attach.name }}</a>
+                        </td>
+                        <td>{{ attach.comments }}</td>
+                        <td>{{ attach.uploaded_at }}</td>
+                        <td>
+                            <form method="post" action="{% url 'delete_attachment' attach.id %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <p>No hay adjuntos para este instrumento.</p>
+        {% endif %}
+
+        <!-- Checks Table -->
+        <h2>Inspecciones Realizadas</h2>
+        {% if checks %}
+        <div class="table-responsive">
+            <table class="table table-sm setup-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Resultado</th>
+                        <th>Comentarios</th>
+                        <th>Adjuntos</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -150,22 +207,24 @@
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
         {% else %}
             <p>No checks found.</p>
         {% endif %}
 
-        <a href="{% url 'admin:core_check_add' %}?instrument={{ instrument.id }}" class="btn custom-btn">Add New Check</a>
+        <a href="{% url 'admin:core_check_add' %}?instrument={{ instrument.id }}" class="btn custom-btn">Nuevas Inspecciones</a>
 
         <!-- Contrasts Table -->
-        <h2>Contrasts</h2>
+        <h2>Contrastes</h2>
         {% if contrasts %}
-            <table class="table table-sm">
+        <div class="table-responsive">
+            <table class="table table-sm setup-table">
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Result</th>
-                        <th>Comments</th>
-                        <th>Attachments</th>
+                        <th>Fecha</th>
+                        <th>Resultado</th>
+                        <th>Comentarios</th>
+                        <th>Adjuntos</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -191,25 +250,27 @@
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
         {% else %}
             <p>No contrasts found.</p>
         {% endif %}
 
-        <a href="{% url 'admin:core_contrast_add' %}?instrument={{ instrument.id }}" class="btn custom-btn">Add New Contrast</a>
+        <a href="{% url 'admin:core_contrast_add' %}?instrument={{ instrument.id }}" class="btn custom-btn">Nuevo Contraste</a>
 
         <!-- SetUps Table -->
-        <h2>SetUps</h2>
+        <h2>Seteos</h2>
         {% if setups %}
-            <table class="table table-sm">
+        <div class="table-responsive">
+            <table class="table table-sm setup-table">
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>GDC Type</th>
-                        <th>GDC Number</th>
-                        <th>Comments</th>
-                        <th>Alarm</th>
-                        <th>Trip</th>
-                        <th>Attachments</th>
+                        <th>Fecha</th>
+                        <th>Tipo de GDC</th>
+                        <th>Número de GDC</th>
+                        <th>Comentarios</th>
+                        <th>Alarma</th>
+                        <th>Disparo</th>
+                        <th>Adjuntos</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -238,10 +299,11 @@
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
         {% else %}
             <p>No setups found.</p>
         {% endif %}
 
-        <a href="{% url 'admin:core_setup_add' %}?instrument={{ instrument.id }}" class="btn custom-btn">Add New SetUp</a>
+        <a href="{% url 'admin:core_setup_add' %}?instrument={{ instrument.id }}" class="btn custom-btn">Nuevo Seteo</a>
     </div>
 {% endblock %}

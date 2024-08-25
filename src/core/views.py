@@ -1,6 +1,7 @@
+from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseNotFound
-from core.models import Instrument, Tag
-from django.shortcuts import render, get_object_or_404
+from core.models import Instrument, Tag , Attachment
+from django.shortcuts import render, get_object_or_404, redirect
 
 def index(request):
     return render(request, "core/index.html")
@@ -23,6 +24,13 @@ def get_instrument_context(tag_id):
     latest_contrast = contrasts.order_by('-date').first()
     latest_alarm_setup = setups.filter(alarm_set__isnull=False).order_by('-date').first()
     latest_trip_setup = setups.filter(trip_set__isnull=False).order_by('-date').first()
+    
+    instrument_content_type = ContentType.objects.get_for_model(Instrument)
+    attachments = Attachment.objects.filter(
+        table=instrument_content_type,
+        table_instance=instrument.id
+    )
+
 
     return {
         'instrument': instrument,
@@ -33,6 +41,7 @@ def get_instrument_context(tag_id):
         'latest_contrast': latest_contrast,
         'latest_alarm': latest_alarm_setup,
         'latest_trip': latest_trip_setup,
+        'attachments': attachments,
     }
 
 def search_item(request, qr_value=None):
@@ -51,3 +60,10 @@ def instrument_detail(request, tag_id):
         return render(request, 'core/instrument_detail.html', {'error_message': 'Instrumento no encontrado. Por favor, intente nuevamente.'})
     
     return render(request, 'core/instrument_detail.html', context)
+
+def delete_attachment(request, attachment_id):
+    attachment = get_object_or_404(Attachment, id=attachment_id)
+    if request.method == 'POST':
+        attachment.delete()
+        return redirect('instrument_detail', tag_id=attachment.content_object.tag.id)
+    return redirect('instrument_detail', tag_id=attachment.content_object.tag.id)

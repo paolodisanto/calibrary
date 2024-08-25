@@ -6,47 +6,65 @@
             text-align: center;
             margin-bottom: 30px; /* Espacio debajo del encabezado */
         }
+
         .instrument-details {
-            font-size: 0.9em; /* Reducir el tamaño de la letra */
+            font-size: 0.9em;
         }
 
         .instrument-details .table {
-            margin-bottom: 30px; /* Añadir espacio entre las tablas */
+            margin-bottom: 30px;
         }
 
         .instrument-details h2 {
-            margin-top: 40px; /* Separar las secciones con un margen mayor */
+            margin-top: 40px;
         }
 
         .custom-btn {
-            font-size: 0.9em; /* Tamaño de letra más pequeño */
-            padding: 5px 10px; /* Ajuste de padding para hacer el botón más pequeño */
-            background-color: #5bc0de; /* Color personalizado del botón */
-            border-color: #46b8da; /* Color de borde del botón */
+            font-size: 0.8em;
+            padding: 5px 10px;
+            background-color: #5bc0de;
+            border-color: #46b8da;
         }
 
         .custom-btn:hover {
-            background-color: #31b0d5; /* Color del botón al hacer hover */
-            border-color: #269abc; /* Color de borde al hacer hover */
+            background-color: #31b0d5;
+            border-color: #269abc;
         }
 
-        /* Nueva clase para alinear en una fila */
+
         .instrument-details .info-row {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px; /* Espacio entre elementos */
-            align-items: center; /* Alinear verticalmente */
-            border-bottom: 1px solid #ddd; /* Línea de separación */
-            padding-bottom: 10px; /* Espacio debajo del contenido de la fila */
-            margin-bottom: 10px; /* Espacio entre filas */
+            flex-wrap: nowrap; /* Evita que los elementos se apilen */
+            gap: 10px;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            overflow-x: auto; /* Añade scroll horizontal si el contenido es muy grande */
         }
 
+        
         .instrument-details .info-item {
-            flex: 1; /* Ocupa el mismo espacio en la fila */
+            flex: 1;
+            min-width: 200px; /* Establece un ancho mínimo para cada elemento */
         }
 
         .instrument-details .info-item strong {
-            display: block; /* Asegura que el texto en negrita esté en una línea separada */
+            display: block;
+        }
+
+        /* Estilo general para todas las tablas */
+        .instrument-details .table th,
+        .instrument-details .table td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 8px;
+            min-width: 120px;
+        }
+
+        .instrument-details .table th {
+            font-weight: bold;
         }
     </style>
 
@@ -68,7 +86,7 @@
                     <strong style="color: red;">Fecha Baja:</strong> <span style="color: red;">{{ instrument.removal_date }}</span>
                 </div>
                 <div class="info-item">
-                    <strong style="color: red;">Razón del baja:</strong> <span style="color: red;">{{ instrument.removal_reason }}</span>
+                    <strong style="color: red;">Motivo de la baja:</strong> <span style="color: red;">{{ instrument.removal_reason }}</span>
                 </div>
         {% endif %}
     </div>
@@ -80,27 +98,26 @@
                 <strong>Magnitud:</strong> {{ instrument.tag.get_magnitude_display }}
             </div>
             <div class="info-item">
-                <strong>Tecnologia:</strong> {{ instrument.tag.get_technology_display }}
+                <strong>Tecnología:</strong> {{ instrument.tag.get_technology_display }}
             </div>
             <div class="info-item">
-                <strong> Display:</strong> {{ instrument.tag.get_display_display }}
+                <strong>Display:</strong> {{ instrument.tag.get_display_display }}
             </div>
-            
         </div>
         <!-- Segunda fila de datos -->
         <div class="info-row">
             <div class="info-item">
-                <strong>Description:</strong> {{ instrument.tag.description }}
+                <strong>Descripción:</strong> {{ instrument.tag.description }}
             </div>
             <div class="info-item">
-                <strong>Traceable:</strong> {{ instrument.traceable|yesno:"Si,No" }}
+                <strong>Contrastable:</strong> {{ instrument.traceable|yesno:"Si,No" }}
             </div>
         </div>
 
-         <!-- Tercera fila de datos -->
-         <div class="info-row">
+        <!-- Tercera fila de datos -->
+        <div class="info-row">
             <div class="info-item">
-                <strong>Ubicacion:</strong> {{ instrument.location.name }}
+                <strong>Ubicación:</strong> {{ instrument.location.name }}
             </div>
             <div class="info-item">
                 <strong>Lugar de montaje:</strong> {{ instrument.location_comments }}
@@ -110,13 +127,13 @@
         <!-- Cuarta fila de datos -->
         <div class="info-row">
             <div class="info-item">
-                <strong>Alarm:</strong> {{ latest_alarm.alarm_set|default:"-" }}
+                <strong>Alarma:</strong> {{ latest_alarm.alarm_set|default:"-" }}
             </div>
             <div class="info-item">
-                <strong>Trip:</strong> {{ latest_trip.trip_set|default:"-" }}
+                <strong>Disparo:</strong> {{ latest_trip.trip_set|default:"-" }}
             </div>
             <div class="info-item">
-                <strong>Chequeo:</strong>{{ latest_check.get_result_display }} - {{ latest_check.date }}
+                <strong>Inspección:</strong>{{ latest_check.get_result_display }} - {{ latest_check.date }}
             </div>
             <div class="info-item">
                 <strong>Contraste:</strong>{{ latest_contrast.get_result_display }} - {{ latest_contrast.date }}
@@ -134,3 +151,4 @@
         </div>
     </div>
 {% endblock %}
+
