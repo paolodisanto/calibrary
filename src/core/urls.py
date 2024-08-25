@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import instrument_detail
+from .views import instrument_detail, qr_code_view
 
 
 urlpatterns = [

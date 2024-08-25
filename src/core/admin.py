@@ -2,7 +2,7 @@ from django.contrib import admin, messages
 from django.contrib.admin import SimpleListFilter #Se agrega para poder realizar filtros personalizados en el admin de django
 from django.contrib.contenttypes.admin import GenericTabularInline
 from django.utils.html import format_html
-from .form import InstrumentForm #, TagForm
+from .form import InstrumentForm
 from django.urls import reverse
 from core.models import (
     SequentialTag, Tag, Location, Instrument, SetUp,
@@ -55,15 +55,16 @@ class InstrumentAdmin(admin.ModelAdmin):
         
         if request.GET.get('removal_date') == 'Not None':
             return self.default_list_display + self.additional_fields
-        
+ 
         return self.default_list_display
     
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
-        if not change:  # Only show message when a new instrument is created
+        if not change:  # Solo mostrar mensaje al crear un nuevo instrumento
             tag = obj.tag
-            qr_code_url = obj.tag.qr_code.url if obj.tag.qr_code else None
-# linea para mensajes: messages.success(request, f'Instrumento creado con TAG: {tag} y QR generado: {qr_code_url}')
+            qr_code_url = tag.qr_code.url if tag.qr_code else 'QR No generado'
+            self.message_user(request, f'TAG: "{obj.tag}" y QR generados con éxito.', messages.SUCCESS)
+            
     
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -116,6 +117,28 @@ class InstrumentAdmin(admin.ModelAdmin):
         return format_html('<a href="{}">Ver Detalles</a>', url)
 
     view_detail_link.short_description = 'Detalles del Instrumento'
+    
+    def qr_code_display(self, obj):
+        if obj.tag.qr_code:
+            qr_code_url = obj.tag.qr_code.url
+            return format_html(
+                '<div style="text-align: center;">'
+                '<img src="{}" width="200" height="200" /><br>'
+                '<a href="{}" download>Descargar QR</a>  |  '
+                '<a href="#" onclick="printQRCode(\'{}\'); return false;">Imprimir QR</a>'
+                '</div>',
+                qr_code_url, qr_code_url, qr_code_url
+            )
+        return "No QR code"
+
+
+    qr_code_display.short_description = 'QR Code'
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:  # Si estamos editando una instancia existente
+            return self.readonly_fields + ('qr_code_display',)
+        return self.readonly_fields
+
 
 class SequentialTagAdmin(admin.ModelAdmin):
     list_display = ('prefix', 'latest')

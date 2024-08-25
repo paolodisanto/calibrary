@@ -1,5 +1,5 @@
 from django.http import HttpResponseNotFound
-from core.models import Instrument
+from core.models import Instrument, Tag
 from django.shortcuts import render, get_object_or_404
 
 def index(request):
@@ -51,3 +51,14 @@ def instrument_detail(request, tag_id):
         return render(request, 'core/instrument_detail.html', {'error_message': 'Instrumento no encontrado. Por favor, intente nuevamente.'})
     
     return render(request, 'core/instrument_detail.html', context)
+
+def qr_code_view(request, tag_id):
+    tag = get_object_or_404(Tag, id=tag_id)
+    qr_code_url = tag.qr_code.url if tag.qr_code else None
+
+    context = {
+        'qr_code_url': qr_code_url,
+        'instrument': tag.instrument  # Asumiendo que Tag tiene una relación con Instrument
+    }
+
+    return render(request, 'core/qr_code_view.html', context)

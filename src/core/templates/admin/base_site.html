@@ -3,9 +3,32 @@
 
 {% block extrahead %}
     <link rel="stylesheet" type="text/css" href="{% static 'core/admin_custom.css' %}">
-    <!--<link rel="stylesheet" type="text/css" href="{% static 'custom_admin/custom_styles.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'core/style.css' %}"> -->
+    <!-- Otros estilos opcionales -->
     {{ block.super }}
+    <script type="text/javascript">
+        function printQRCode(qrCodeUrl) {
+            // Crear una ventana emergente
+            var printWindow = window.open('', '', 'width=600,height=400');
+            
+            // Asegurarse de que la ventana emergente se haya creado
+            if (printWindow) {
+                printWindow.document.open();
+                printWindow.document.write('<html><head><title>Imprimir QR</title>');
+                printWindow.document.write('<style>body { text-align: center; }</style>');
+                printWindow.document.write('</head><body>');
+                printWindow.document.write('<img src="' + qrCodeUrl + '" style="width: 100%; height: auto;"/>');
+                printWindow.document.write('</body></html>');
+                printWindow.document.close();
+                printWindow.onload = function() {
+                    printWindow.focus();
+                    printWindow.print();
+                    printWindow.close();
+                };
+            } else {
+                alert('La ventana emergente ha sido bloqueada. Por favor, permita los popups para este sitio.');
+            }
+        }
+    </script>
 {% endblock %}
 
 {% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
@@ -22,15 +45,3 @@
 
 {% block nav-global %}{% endblock %}
 
-<!-- LINEA PARA MENSAJES
-{% block content %}
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    {{ block.super }}
-{% endblock %}
--->
