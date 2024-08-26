@@ -1,4 +1,5 @@
 {% extends "admin/base.html" %}
+{% load i18n %}
 {% load static %}
 
 {% block extrahead %}
@@ -31,7 +32,7 @@
     </script>
 {% endblock %}
 
-{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+{% block title  %} {% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
 
 
 {% block branding %}
@@ -41,6 +42,32 @@
       Calibrary
   </a>
 </h1>
+{% endblock %}
+
+{% block userlinks %}
+  <style>
+    #user-tools {
+      display: flex;
+      gap: 15px; /* Espacio entre los elementos */
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    #user-tools li {
+      margin: 0;
+      padding: 0;
+    }
+
+    #user-tools a {
+      text-decoration: none;
+    }
+  </style>
+  <ul id="user-tools">
+    <a href="{% url 'index' %}">Home</a>
+    <a href="{% url 'admin:index' %}">Admin</a>
+    
+  </ul>
 {% endblock %}
 
 {% block nav-global %}{% endblock %}

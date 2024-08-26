@@ -68,7 +68,18 @@
         }
     </style>
 
-    <h2 class="centered-header">{{ instrument.tag.id }}</h2>
+    <h2 class="centered-header">Especificaciones {{ instrument.tag.id }}</h2>
+    <div class="instrument-details">
+        <div class="info-row">
+        {% if instrument.removal_date %}  
+                <div class="info-item">
+                    <strong style="color: red;">Fecha Baja:</strong> <span style="color: red;">{{ instrument.removal_date }}</span>
+                </div>
+                <div class="info-item">
+                    <strong style="color: red;">Motivo de la baja:</strong> <span style="color: red;">{{ instrument.removal_reason }}</span>
+                </div>
+        {% endif %}
+    </div>
     <div class="instrument-details">
 
         <div class="info-row">
@@ -121,10 +132,16 @@
 
         <div class="info-row">
             <div class="info-item">
-                <strong>Alarma:</strong> {{ latest_alarm.alarm_set }}
+                <strong>Alarma:</strong> {{ latest_alarm.alarm_set|default:"-" }}
             </div>
             <div class="info-item">
-                <strong>Disparo:</strong> {{ latest_trip.trip_set }}
+                <strong>Disparo:</strong> {{ latest_trip.trip_set|default:"-" }}
+            </div>
+            <div class="info-item">
+                <strong>Última Inspección:</strong>{{ latest_check.get_result_display }} - {{ latest_check.date }}
+            </div>
+            <div class="info-item">
+                <strong>Último Contraste:</strong>{{ latest_contrast.get_result_display }} - {{ latest_contrast.date }}
             </div>
         </div>
 
@@ -142,20 +159,20 @@
             <table class="table table-sm setup-table">
                 <thead>
                     <tr>
+                        <th>Fecha de Subida</th>
                         <th>Nombre</th>
                         <th>Comentarios</th>
-                        <th>Fecha de Subida</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for attach in attachments %}
                     <tr>
+                        <td>{{ attach.uploaded_at }}</td>
                         <td>
                             <a href="{{ attach.media_path.url }}">{{ attach.name }}</a>
                         </td>
                         <td>{{ attach.comments }}</td>
-                        <td>{{ attach.uploaded_at }}</td>
                         <td>
                             <form method="post" action="{% url 'delete_attachment' attach.id %}" style="display:inline;">
                                 {% csrf_token %}
