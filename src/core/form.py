@@ -47,7 +47,12 @@ class InstrumentForm(forms.ModelForm):
             self.fields['magnitude'].initial = self.instance.tag.magnitude
             self.fields['technology'].initial = self.instance.tag.technology
             self.fields['display'].initial = self.instance.tag.display
-            self.fields['description'].initial = self.instance.tag.description
+            
+            
+            self.fields['magnitude'].disabled = True
+            self.fields['technology'].disabled = True
+            self.fields['display'].disabled = True
+            
         else:  # Creating a new instance
             self.fields['magnitude'].initial = ''
             self.fields['technology'].initial = ''
