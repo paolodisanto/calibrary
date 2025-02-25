@@ -87,6 +87,8 @@ class Tag(models.Model):
                 display=display,
                 description=description
             )
+    def get_qr_text(self):
+       return f"{self.id}\n{self.description}\nMagnitud: {self.get_magnitude_display()}\nTecnología: {self.get_technology_display()}\nModificador: {self.get_display_display()}"      
 
     def save(self, *args, **kwargs):
         """
@@ -99,7 +101,7 @@ class Tag(models.Model):
                 box_size=10,
                 border=4,
             )
-            qr.add_data(self.id)
+            qr.add_data(self.get_qr_text())            
             qr.make(fit=True)
             img = qr.make_image(fill='black', back_color='white')
             buffer = BytesIO()

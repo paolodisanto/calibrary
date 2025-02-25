@@ -38,7 +38,7 @@
                 // Oculta el lector de QR
                 document.getElementById('reader').style.display = 'none';
                 // Coloca el valor leído en el input oculto y envía el formulario
-                document.getElementById('qrValue').value = decodedText;
+                document.getElementById('qrValue').value = decodedText.split("\n")[0];
                 document.getElementById('qrForm').submit();
             }).catch(err => {
                 console.error("Error al detener el escáner: ", err);
